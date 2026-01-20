@@ -51,6 +51,16 @@ async def dashboard(request: Request, user: User = Depends(get_current_user_opti
         {"request": request, "user": user}
     )
 
+@app.get("/privacy", response_class=HTMLResponse)
+async def privacy(request: Request):
+    """Privacy Policy"""
+    return templates.TemplateResponse("privacy.html", {"request": request})
+
+@app.get("/terms", response_class=HTMLResponse)
+async def terms(request: Request):
+    """Terms of Service"""
+    return templates.TemplateResponse("terms.html", {"request": request})
+
 @app.get("/health")
 async def health_check():
     """Health check endpoint for monitoring"""
