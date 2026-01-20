@@ -1,18 +1,11 @@
 import os
-from pathlib import Path
 
 def get_database_url():
-    """Get database URL based on environment"""
+    """Get database URL - ephemeral for free tier"""
     
-    # Check if we're on Render (they set this env var)
     if os.getenv('RENDER'):
-        # Use Render's persistent disk path
-        db_path = '/var/data/app.db'
-        
-        # Create directory if it doesn't exist
-        Path('/var/data').mkdir(parents=True, exist_ok=True)
-        
-        return f'sqlite:///{db_path}'
+        # Use /tmp directory which is writable on Render free tier
+        return 'sqlite:////tmp/app.db'
     
     # Local development
     return 'sqlite:///./app.db'
