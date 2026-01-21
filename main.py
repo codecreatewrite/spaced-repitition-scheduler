@@ -3,7 +3,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from contextlib import asynccontextmanager
-from app.api import auth, schedules
+from app.api import auth, schedules, feedback
 from app.core.config import settings
 from app.core.dependencies import get_current_user_optional
 from app.models.user import User
@@ -28,6 +28,7 @@ templates = Jinja2Templates(directory="app/templates")
 # Include routers
 app.include_router(auth.router)
 app.include_router(schedules.router)
+app.include_router(feedback.router)
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request, user: User = Depends(get_current_user_optional)):
@@ -50,6 +51,11 @@ async def dashboard(request: Request, user: User = Depends(get_current_user_opti
         "dashboard.html",
         {"request": request, "user": user}
     )
+
+@app.get("/feedback", response_class=HTMLResponse)
+async def feedback_page(request: Request):
+    """Feedback page"""
+    return templates.TemplateResponse("feedback.html", {"request": request})
 
 @app.get("/privacy", response_class=HTMLResponse)
 async def privacy(request: Request):

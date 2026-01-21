@@ -3,70 +3,366 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spaced Repetition Scheduler</title>
+    <title>Spaced Repetition Scheduler - Never Forget What You Learn</title>
+    <meta name="description" content="Automatically schedule science-backed review sessions in your Google Calendar. Master any subject with spaced repetition.">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            color: #1a1a1a;
+            overflow-x: hidden;
+        }
+        
+        /* Hero Section */
+        .hero {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
             min-height: 100vh;
             display: flex;
-            align-items: center;
+            flex-direction: column;
             justify-content: center;
-            color: #333;
+            align-items: center;
         }
-        .container {
+        
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        
+        .hero p {
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            max-width: 600px;
+        }
+        
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
             background: white;
-            padding: 3rem;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            max-width: 500px;
-            text-align: center;
-        }
-        h1 { color: #667eea; margin-bottom: 1rem; }
-        p { color: #666; margin-bottom: 2rem; line-height: 1.6; }
-        .btn {
-            display: inline-block;
-            padding: 1rem 2rem;
-            background: #667eea;
-            color: white;
+            color: #667eea;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
             text-decoration: none;
-            border-radius: 10px;
-            font-weight: 600;
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             transition: transform 0.2s, box-shadow 0.2s;
         }
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
         }
-        .error {
-            background: #fee;
-            color: #c33;
-            padding: 1rem;
-            border-radius: 8px;
+        
+        .trust-badge {
+            margin-top: 2rem;
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 5rem 2rem;
+            background: #f9fafb;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 3rem;
+            color: #1a1a1a;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: transform 0.2s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
             margin-bottom: 1rem;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #667eea;
+        }
+        
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        /* How It Works */
+        .how-it-works {
+            padding: 5rem 2rem;
+            background: white;
+        }
+        
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .step {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .step-number {
+            display: inline-block;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            font-weight: bold;
+            line-height: 60px;
+            margin-bottom: 1rem;
+        }
+        
+        .step h3 {
+            margin-bottom: 0.5rem;
+            color: #1a1a1a;
+        }
+        
+        .step p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        /* Feedback Section */
+        .feedback {
+            padding: 5rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+        
+        .feedback h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feedback p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+        
+        .feedback-button {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: transform 0.2s;
+        }
+        
+        .feedback-button:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Footer */
+        footer {
+            background: #1a1a1a;
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        
+        footer a {
+            color: #667eea;
+            text-decoration: none;
+            margin: 0 1rem;
+        }
+        
+        footer a:hover {
+            text-decoration: underline;
+        }
+        
+        .social-links {
+            margin-top: 1rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero { padding: 3rem 1rem; }
+            .section-title { font-size: 2rem; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        {% if error %}
-        <div class="error">{{ error }}</div>
-        {% endif %}
+    {% if user %}
+    <!-- Logged-in user sees dashboard link -->
+    <div style="position: fixed; top: 1rem; right: 1rem; z-index: 1000;">
+        <a href="/dashboard" style="background: white; color: #667eea; padding: 0.75rem 1.5rem; border-radius: 50px; text-decoration: none; font-weight: 600; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+            Go to Dashboard →
+        </a>
+    </div>
+    {% endif %}
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>🧠 Never Forget What You Learn</h1>
+        <p>Automatically schedule science-backed review sessions in your Google Calendar. Master any subject with spaced repetition.</p>
         
         {% if user %}
-        <h1>Welcome back, {{ user.name }}!</h1>
-        <p>Ready to schedule your next review session?</p>
-        <a href="/dashboard" class="btn">Go to Dashboard</a>
+        <a href="/dashboard" class="cta-button">
+            <span>Open Dashboard</span>
+        </a>
         {% else %}
-        <h1>🧠 Spaced Repetition Scheduler</h1>
-        <p>Master any subject with science-backed review intervals. Automatically sync review sessions to your Google Calendar.</p>
-        <a href="/auth/login" class="btn">Sign in with Google</a>
+        <a href="/auth/login" class="cta-button">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            </svg>
+            <span>Sign in with Google</span>
+        </a>
         {% endif %}
-    </div>
-    <footer style="text-align: center; padding: 2rem; color: #999;">
-        <a href="/privacy" style="color: #667eea; margin: 0 1rem;">Privacy Policy</a>
-        <a href="/terms" style="color: #667eea; margin: 0 1rem;">Terms of Service</a>
+        
+        <div class="trust-badge">
+            ✓ Free forever &nbsp;•&nbsp; ✓ No credit card required &nbsp;•&nbsp; ✓ Privacy-first
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">Why Spaced Repetition Works</h2>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🧪</div>
+                    <h3>Science-Backed</h3>
+                    <p>Based on decades of research showing that reviewing material at increasing intervals improves long-term retention by up to 200%.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Instant Setup</h3>
+                    <p>Sign in with Google, type your topic, and we'll create your entire review schedule in seconds. No manual calendar editing needed.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📅</div>
+                    <h3>Calendar Integration</h3>
+                    <p>Reviews appear directly in Google Calendar with reminders. Works seamlessly across all your devices - phone, tablet, desktop.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Customizable Intervals</h3>
+                    <p>Use our proven defaults (1, 3, 7, 21 days) or create your own schedule. Perfect for students, professionals, and lifelong learners.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Privacy-First</h3>
+                    <p>We only create events - never read your existing calendar. Your data is yours. No ads, no tracking, no selling your information.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3>100% Free</h3>
+                    <p>No hidden fees, no premium tiers, no credit card required. Built by learners, for learners. Use it as much as you want.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- How It Works -->
+    <section class="how-it-works">
+        <div class="container">
+            <h2 class="section-title">How It Works</h2>
+            
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Sign In</h3>
+                    <p>Connect with your Google account in one click. Quick and secure.</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Enter Topic</h3>
+                    <p>Type what you're studying - a subject, chapter, or skill you want to master.</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Get Schedule</h3>
+                    <p>We create optimized review dates in your calendar automatically.</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Review & Remember</h3>
+                    <p>Get reminders on review days. Follow the schedule and watch your retention soar.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Feedback Section -->
+    <section class="feedback">
+        <div class="container">
+            <h2>Help Us Build Better</h2>
+            <p>Have an idea? Want a new feature? We're listening.</p>
+            <a href="/feedback" class="feedback-button">Share Your Feedback →</a>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Spaced Repetition Scheduler. Built with ❤️ for learners.</p>
+            <div style="margin-top: 1rem;">
+                <a href="/privacy">Privacy Policy</a>
+                <a href="/terms">Terms of Service</a>
+                <a href="/feedback">Feedback</a>
+            </div>
+            <div class="social-links">
+                <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.7;">
+                    Created by <a href="mailto:goodnewsokpubigho22@gmail.com">Goodnews Okpubigho</a>
+                </p>
+            </div>
+        </div>
     </footer>
 </body>
 </html>
