@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Response, Request
+from app.services.analytics_service import AnalyticsService
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 from app.db.session import get_db
@@ -57,6 +58,8 @@ async def auth_callback(
         else:
             # Update last login
             UserCRUD.update_last_login(db, user.id)
+        # ADD THIS LINE - Track session
+        AnalyticsService.update_session(db, user.id)
         
         # Store/update OAuth token
         TokenCRUD.create_or_update(db, user.id, token_data)

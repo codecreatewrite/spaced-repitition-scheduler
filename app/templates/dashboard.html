@@ -128,6 +128,10 @@
 <body>
     <nav>
         <h2>📚 Spaced Repetition</h2>
+        <div class="nav-links" style="display: flex; gap: 1rem;">
+            <a href="/dashboard" style="color: #667eea; text-decoration: none; padding: 0.5rem 1rem; background: #f0f0f0; border-radius: 6px;">Dashboard</a>
+            <a href="/analytics" style="color: #667eea; text-decoration: none; padding: 0.5rem 1rem; border-radius: 6px;">Analytics</a>
+        </div>
         <div class="user-info">
             {% if user.picture %}
             <img src="{{ user.picture }}" alt="{{ user.name }}">
@@ -147,7 +151,7 @@
             <form id="scheduleForm">
                 <div class="form-group">
                     <label for="topic">Topic or Subject *</label>
-                    <input type="text" id="topic" name="topic" placeholder="e.g., Organic Chemistry: Alkanes" required>
+                    <input type="text" id="topic" name="topic" placeholder="e.g., Med-Surg: Asphyxia" required>
                 </div>
                 
                 <div class="form-group">

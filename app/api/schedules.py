@@ -1,3 +1,4 @@
+from app.services.analytics_service import AnalyticsService
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
@@ -95,6 +96,8 @@ async def create_schedule(
         }
         
         schedule = ScheduleCRUD.create(db, schedule_data)
+
+        AnalyticsService.update_schedule_created(db, current_user.id, len(event_ids))
         
         return {
             'success': True,

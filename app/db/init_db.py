@@ -3,7 +3,8 @@ from app.db.session import engine
 from app.models.user import User
 from app.models.oauth_token import OAuthToken
 from app.models.schedule import Schedule
-from app.models.feedback import Feedback  # ADD THIS
+from app.models.feedback import Feedback
+from app.models.analytics import UserAnalytics  # ADD THIS
 
 def init_db():
     """Create all tables"""
