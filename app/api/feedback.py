@@ -37,10 +37,6 @@ async def submit_feedback(
     db.commit()
     db.refresh(feedback)
 
-    # Send email asynchronously
     background_tasks.add_task(send_feedback_email, feedback)
 
-    return {
-        "success": True,
-        "message": "Feedback received successfully",
-    }
+    return {"success": True, "message": "Feedback received"}
