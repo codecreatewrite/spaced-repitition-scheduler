@@ -46,7 +46,7 @@ class CalendarService:
             Created event data from Google Calendar API
         """
         event = {
-            'summary': f'📚 Review: {topic}',
+            'summary': f'Review: {topic}',
             'description': (
                 f'Spaced repetition review for: {topic}\n\n'
                 f'Interval: {interval_days} day{"s" if interval_days != 1 else ""}\n'
