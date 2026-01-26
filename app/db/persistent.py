@@ -1,11 +1,16 @@
 import os
 
 def get_database_url():
-    """Get database URL - ephemeral for free tier"""
+    """Get database URL from environment"""
+    # Render and production use DATABASE_URL env var
+    database_url = os.getenv('DATABASE_URL')
     
-    if os.getenv('RENDER'):
-        # Use /tmp directory which is writable on Render free tier
-        return 'sqlite:////tmp/app.db'
+    if database_url:
+        # PostgreSQL URL might start with postgres:// (old) or postgresql://
+        # SQLAlchemy needs postgresql://
+        if database_url.startswith('postgres://'):
+            database_url = database_url.replace('postgres://', 'postgresql://', 1)
+        return database_url
     
-    # Local development
+    # Local development fallback
     return 'sqlite:///./app.db'
