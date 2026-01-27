@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, BackgroundTasks
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from app.db.session import get_db
@@ -9,34 +9,36 @@ import uuid
 
 router = APIRouter(prefix="/api/feedback", tags=["feedback"])
 
-
 class FeedbackRequest(BaseModel):
     name: str
     email: str
     type: str
     message: str
 
-
 @router.post("")
 async def submit_feedback(
     feedback_data: FeedbackRequest,
-    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
-    current_user=Depends(get_current_user_optional),
+    current_user = Depends(get_current_user_optional)
 ):
+    # Save feedback to DB
     feedback = Feedback(
         id=str(uuid.uuid4()),
-        name=feedback_data.name,
-        email=feedback_data.email,
+        name=feedback_data.name or "Anonymous",
+        email=feedback_data.email or "not provided",
         type=feedback_data.type,
         message=feedback_data.message,
-        user_id=current_user.id if current_user else None,
+        user_id=current_user.id if current_user else None
     )
-
     db.add(feedback)
     db.commit()
-    db.refresh(feedback)
 
-    background_tasks.add_task(send_feedback_email, feedback)
+    # Send email
+    send_feedback_email(
+        name=feedback.name,
+        email=feedback.email,
+        feedback_type=feedback.type,
+        message=feedback.message
+    )
 
-    return {"success": True, "message": "Feedback received"}
+    return {"success": True, "message": "Feedback received and email sent."}
