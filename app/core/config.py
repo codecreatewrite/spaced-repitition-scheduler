@@ -10,6 +10,11 @@ class Settings(BaseSettings):
     
     # Database - UPDATE THIS LINE
     DATABASE_URL: str = get_database_url()
+
+    #Email Configuration
+    EMAIL_USER: str
+    EMAIL_PASSWORD: str
+    EMAIL_RECIPIENT: str
     
     # Google OAuth
     GOOGLE_CLIENT_ID: str
