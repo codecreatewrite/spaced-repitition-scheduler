@@ -36,7 +36,7 @@ async def home(request: Request, user: User = Depends(get_current_user_optional)
     """Landing page"""
     return templates.TemplateResponse(
         "index.html",
-        {"request": request, "user": user}
+        {"request": request, "user": user, "settings": settings}
     )
 
 @app.get("/dashboard", response_class=HTMLResponse)
