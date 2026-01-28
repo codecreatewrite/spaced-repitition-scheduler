@@ -1,5 +1,3 @@
-from dotenv import load_dotenv
-load_dotenv()
 from fastapi import FastAPI, Request, Depends
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -66,6 +64,13 @@ async def analytics_page(request: Request, user: User = Depends(get_current_user
 async def feedback_page(request: Request):
     """Feedback page"""
     return templates.TemplateResponse("feedback.html", {"request": request})
+
+@app.get("/admin/feedback", response_class=HTMLResponse)
+async def admin_feedback(request: Request, user: User = Depends(get_current_user_optional)):
+    """Admin feedback dashboard"""
+    if not user:
+        return RedirectResponse(url="/")
+    return templates.TemplateResponse("admin_feedback.html", {"request": request})
 
 @app.get("/privacy", response_class=HTMLResponse)
 async def privacy(request: Request):

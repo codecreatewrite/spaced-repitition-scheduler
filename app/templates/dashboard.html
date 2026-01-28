@@ -124,6 +124,17 @@
             padding: 2rem;
         }
     </style>
+    <!-- Add before </head> in all templates -->
+    {% if settings.ENVIRONMENT == "production" %}
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
+    {% endif %}
 </head>
 <body>
     <nav>
@@ -131,6 +142,7 @@
         <div class="nav-links" style="display: flex; gap: 1rem;">
             <a href="/dashboard" style="color: #667eea; text-decoration: none; padding: 0.5rem 1rem; background: #f0f0f0; border-radius: 6px;">Dashboard</a>
             <a href="/analytics" style="color: #667eea; text-decoration: none; padding: 0.5rem 1rem; border-radius: 6px;">Analytics</a>
+            <a href="/admin/feedback" style="color: #667eea; text-decoration: none; padding: 0.5rem 1rem; border-radius: 6px;">📬 Feedback</a>
         </div>
         <div class="user-info">
             {% if user.picture %}

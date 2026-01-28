@@ -15,14 +15,7 @@ class Settings(BaseSettings):
     GOOGLE_CLIENT_ID: str
     GOOGLE_CLIENT_SECRET: str
     GOOGLE_REDIRECT_URI: str
-
-    # Email / Feedback (ADD THESE)
-    FEEDBACK_EMAIL_TO: str
-    SMTP_HOST: str
-    SMTP_PORT: int
-    SMTP_USER: str
-    SMTP_PASSWORD: str
-    
+ 
     # Calendar
     DEFAULT_INTERVALS: str = "1,3,7,21"
     TIMEZONE: str = "Africa/Lagos"
@@ -33,6 +26,5 @@ class Settings(BaseSettings):
     
     class Config:
         env_file = ".env"
-        extra = "forbid"
 
 settings = Settings()

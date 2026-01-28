@@ -1,0 +1,72 @@
+import aiosmtplib
+from email.message import EmailMessage
+import os
+from datetime import datetime
+
+class EmailService:
+    """Send email notifications via Gmail SMTP"""
+    
+    @staticmethod
+    async def send_feedback_notification(feedback_data: dict):
+        """Send email when feedback is received"""
+        
+        # Get credentials from environment
+        email_user = os.getenv("EMAIL_USER")
+        email_password = os.getenv("EMAIL_PASSWORD")
+        email_recipient = os.getenv("EMAIL_RECIPIENT", email_user)
+        
+        if not email_user or not email_password:
+            print("⚠️ Email not configured. Skipping notification.")
+            print("   Set EMAIL_USER and EMAIL_PASSWORD environment variables")
+            return
+        
+        # Create email message
+        message = EmailMessage()
+        message["From"] = email_user
+        message["To"] = email_recipient
+        message["Subject"] = f"🔔 New Feedback: {feedback_data['type'].upper()}"
+        
+        # Email body
+        body = f"""
+New feedback received from Spaced Repetition Scheduler!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+TYPE: {feedback_data['type'].upper()}
+
+FROM:
+  Name: {feedback_data['name']}
+  Email: {feedback_data['email']}
+
+MESSAGE:
+{feedback_data['message']}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Submitted: {feedback_data.get('created_at', datetime.now().strftime('%Y-%m-%d %H:%M:%S'))}
+
+---
+Spaced Repetition Scheduler Feedback System
+        """
+        
+        message.set_content(body)
+        
+        try:
+            # Send via Gmail SMTP
+            await aiosmtplib.send(
+                message,
+                hostname="smtp.gmail.com",
+                port=587,
+                username=email_user,
+                password=email_password,
+                start_tls=True,
+                timeout=10
+            )
+            
+            print(f"✅ Email notification sent to {email_recipient}")
+            return True
+            
+        except Exception as e:
+            print(f"❌ Failed to send email: {str(e)}")
+            # Don't crash if email fails - just log it
+            return False
