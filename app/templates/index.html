@@ -227,17 +227,7 @@
             .section-title { font-size: 2rem; }
         }
     </style>
-    <!-- Add before </head> in all templates -->
-    {% if settings.ENVIRONMENT == "production" %}
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-XXXXXXXXXX');
-    </script>
-    {% endif %}
+    {% include "base_analytics.html" %}
 </head>
 <body>
     {% if user %}
