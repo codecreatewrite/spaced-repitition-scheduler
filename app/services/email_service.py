@@ -15,6 +15,11 @@ class EmailService:
         email_password = os.getenv("EMAIL_PASSWORD")
         email_recipient = os.getenv("EMAIL_RECIPIENT", email_user)
         
+        # ADD DEBUGGING
+        print(f"🔍 DEBUG - EMAIL_USER: {email_user}")
+        print(f"🔍 DEBUG - EMAIL_PASSWORD: {'*' * len(email_password) if email_password else 'NOT SET'}")
+        print(f"🔍 DEBUG - EMAIL_RECIPIENT: {email_recipient}")
+        
         if not email_user or not email_password:
             print("⚠️ Email not configured. Skipping notification.")
             print("   Set EMAIL_USER and EMAIL_PASSWORD environment variables")
@@ -52,6 +57,8 @@ Spaced Repetition Scheduler Feedback System
         message.set_content(body)
         
         try:
+            print("📧 Attempting to send email...")
+            
             # Send via Gmail SMTP
             await aiosmtplib.send(
                 message,
@@ -68,5 +75,6 @@ Spaced Repetition Scheduler Feedback System
             
         except Exception as e:
             print(f"❌ Failed to send email: {str(e)}")
-            # Don't crash if email fails - just log it
+            import traceback
+            traceback.print_exc()  # Show full error
             return False

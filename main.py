@@ -45,12 +45,12 @@ async def dashboard(request: Request, user: User = Depends(get_current_user_opti
     if not user:
         return templates.TemplateResponse(
             "index.html",
-            {"request": request, "user": None, "error": "Please sign in to continue"}
+            {"request": request, "user": None, "error": "Please sign in to continue", "settings": settings}
         )
     
     return templates.TemplateResponse(
         "dashboard.html",
-        {"request": request, "user": user}
+        {"request": request, "user": user, "settings": settings}
     )
 
 @app.get("/analytics", response_class=HTMLResponse)
@@ -58,12 +58,12 @@ async def analytics_page(request: Request, user: User = Depends(get_current_user
     """Analytics page"""
     if not user:
         return RedirectResponse(url="/")
-    return templates.TemplateResponse("analytics.html", {"request": request, "user": user})
+    return templates.TemplateResponse("analytics.html", {"request": request, "user": user, "settings": settings})
 
 @app.get("/feedback", response_class=HTMLResponse)
 async def feedback_page(request: Request):
     """Feedback page"""
-    return templates.TemplateResponse("feedback.html", {"request": request})
+    return templates.TemplateResponse("feedback.html", {"request": request, "settings": settings})
 
 @app.get("/admin/feedback", response_class=HTMLResponse)
 async def admin_feedback(request: Request, user: User = Depends(get_current_user_optional)):
