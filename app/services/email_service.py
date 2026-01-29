@@ -63,11 +63,11 @@ Spaced Repetition Scheduler Feedback System
             await aiosmtplib.send(
                 message,
                 hostname="smtp.gmail.com",
-                port=587,
+                port=465,
                 username=email_user,
                 password=email_password,
-                start_tls=True,
-                timeout=10
+                use_tls=True,
+                timeout=30
             )
             
             print(f"✅ Email notification sent to {email_recipient}")
