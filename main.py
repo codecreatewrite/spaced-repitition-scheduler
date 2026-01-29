@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request, Depends
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from contextlib import asynccontextmanager
@@ -90,6 +90,12 @@ async def health_check():
         "environment": settings.ENVIRONMENT,
         "database": "connected"  # Could add actual DB check here
     }
+
+@app.head("/health")
+async def healthcheckhead():
+    """HEAD method for health check endpoint"""
+    # Return 200 OK with no body
+    return JSONResponse(content=None, status_code=200)
 
 if __name__ == "__main__":
     import uvicorn
