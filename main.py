@@ -91,6 +91,7 @@ async def health_check():
         "database": "connected"  # Could add actual DB check here
     }
 
+# Include HEAD method for pinging
 @app.head("/health")
 async def healthcheckhead():
     """HEAD method for health check endpoint"""
