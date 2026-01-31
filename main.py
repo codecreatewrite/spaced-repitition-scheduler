@@ -82,14 +82,35 @@ async def terms(request: Request):
     """Terms of Service"""
     return templates.TemplateResponse("terms.html", {"request": request})
 
+#Health check
 @app.get("/health")
 async def health_check():
     """Health check endpoint for monitoring"""
-    return {
-        "status": "healthy", 
-        "environment": settings.ENVIRONMENT,
-        "database": "connected"  # Could add actual DB check here
-    }
+    
+    # Test database connection
+    try:
+        from app.db.session import SessionLocal
+        db = SessionLocal()
+        
+        # Count users to verify DB is working
+        from app.models.user import User
+        user_count = db.query(User).count()
+        
+        db.close()
+        
+        return {
+            "status": "healthy",
+            "environment": settings.ENVIRONMENT,
+            "database": "connected",
+            "database_type": "PostgreSQL" if "postgresql" in settings.DATABASE_URL else "SQLite",
+            "user_count": user_count
+        }
+    except Exception as e:
+        return {
+            "status": "unhealthy",
+            "error": str(e),
+            "database": "disconnected"
+        }
 
 # Include HEAD method for pinging
 @app.head("/health")

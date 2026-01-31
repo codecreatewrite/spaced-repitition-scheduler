@@ -16,9 +16,9 @@ class EmailService:
         email_recipient = os.getenv("EMAIL_RECIPIENT", email_user)
         
         # ADD DEBUGGING
-        print(f"🔍 DEBUG - EMAIL_USER: {email_user}")
-        print(f"🔍 DEBUG - EMAIL_PASSWORD: {'*' * len(email_password) if email_password else 'NOT SET'}")
-        print(f"🔍 DEBUG - EMAIL_RECIPIENT: {email_recipient}")
+        #print(f"🔍 DEBUG - EMAIL_USER: {email_user}")
+        #print(f"🔍 DEBUG - EMAIL_PASSWORD: {'*' * len(email_password) if email_password else 'NOT SET'}")
+        #print(f"🔍 DEBUG - EMAIL_RECIPIENT: {email_recipient}")
         
         if not email_user or not email_password:
             print("⚠️ Email not configured. Skipping notification.")
@@ -70,7 +70,7 @@ Spaced Repetition Scheduler Feedback System
                 timeout=30
             )
             
-            print(f"✅ Email notification sent to {email_recipient}")
+            print(f"✅ Email notification sent")
             return True
             
         except Exception as e:
