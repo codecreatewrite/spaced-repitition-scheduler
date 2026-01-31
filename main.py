@@ -82,7 +82,7 @@ async def terms(request: Request):
     """Terms of Service"""
     return templates.TemplateResponse("terms.html", {"request": request})
 
-#Health check
+# Health check
 @app.get("/health")
 async def health_check():
     """Health check endpoint for monitoring"""
