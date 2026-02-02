@@ -1,11 +1,29 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudyCore - Study Smarter, Not Harder</title>
-    <meta name="description" content="Active recall, StudyCore, and study tools built for Nigerian university students. Master your courses with science-backed learning.">
-    <meta name="google-site-verification" content="google-site-verification=CYRvIriA_IV95si1v-q_oXoW-HHMN0bUe9Oj68exdhU">
+    
+    <!-- SEO & Verification -->
+    <title>StudyCore - Active Recall & Spaced Repetition for Nigerian Students</title>
+    <meta name="description" content="StudyCore helps Nigerian university students master their courses using active recall and spaced repetition. Schedule automatic review sessions in Google Calendar and track your study progress. Free forever.">
+    <meta name="keywords" content="study app Nigeria, spaced repetition, active recall, university students, exam preparation, Nigerian education, study schedule, Google Calendar integration">
+    <meta name="author" content="Goodnews Okpubigho">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="StudyCore - Study Smarter, Not Harder">
+    <meta property="og:description" content="Free active recall and spaced repetition tools for Nigerian university students. Integrate with Google Calendar to never forget what you learn.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://studycore.com.ng">
+    <meta property="og:site_name" content="StudyCore">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="StudyCore - Study Smarter, Not Harder">
+    <meta name="twitter:description" content="Free study tools for Nigerian students using active recall and spaced repetition.">
+    
+    <!-- Google Site Verification -->
+    <meta name="google-site-verification" content="YOUR_VERIFICATION_CODE">
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -143,6 +161,30 @@
             line-height: 1.6;
         }
         
+        /* purpose-box Section */
+        .purpose-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            max-width: 700px;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+        }
+        
+        .purpose-box h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: white;
+        }
+        
+        .purpose-box p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: white;
+        }
+
         /* Stats Section */
         .stats {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -221,8 +263,10 @@
             .hero { padding: 3rem 1rem; }
             .section-title { font-size: 2rem; }
             .logo { font-size: 2rem; }
+            .purpose-box { padding: 1rem; }
         }
     </style>
+    {% include "base_analytics.html" %}
 </head>
 <body>
     {% if user %}
@@ -258,10 +302,10 @@
         {% endif %}
         
         <div class="trust-badge">
-            ✓ 100% Free &nbsp;•&nbsp; ✓ Built by a Nigerian student &nbsp;•&nbsp; ✓ No BS, just results
+            ✓ 100% Free Forever &nbsp;•&nbsp; ✓ Built by a Nigerian student &nbsp;•&nbsp; ✓ No BS, just results
         </div>
     </section>
-    
+
     <!-- Features Section -->
     <section class="features">
         <div class="container">
@@ -307,7 +351,23 @@
             </div>
         </div>
     </section>
-    
+
+    <!-- Purpose Section -->
+    <section style="padding: 4rem 2rem; background: white; text-align: center;">
+        <div class="container">
+            <div class="purpose-box" style="margin: 0 auto;">
+                <h2>🎯 What is StudyCore?</h2>
+                <p>
+                    StudyCore is a <strong>free learning platform</strong> designed specifically for Nigerian university students. 
+                    We help you remember what you study using two scientifically-proven methods: 
+                    <strong>active recall</strong> (explaining topics from memory) and <strong>spaced repetition</strong> 
+                    (automatic review scheduling). Our app integrates with Google Calendar to schedule your review sessions 
+                    at optimal intervals, ensuring you never forget what you've learned.
+                </p>
+            </div>
+        </div>
+    </section>
+
     <!-- Stats Section -->
     <section class="stats">
         <div class="container">
