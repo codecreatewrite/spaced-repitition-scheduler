@@ -25,7 +25,7 @@ class Topic(Base):
     
     # Relationships
     explain_sessions = relationship("ExplainSession", back_populates="topic", cascade="all, delete-orphan")
-    schedules = relationship("Schedule", back_populates="topic")
+    schedules = relationship("Schedule", back_populates="topic")  # Must match Schedule's back_populates
 
 
 class ExplainSession(Base):
