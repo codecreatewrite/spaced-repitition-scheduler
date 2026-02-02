@@ -37,7 +37,7 @@ async def create_schedule(
     db: Session = Depends(get_db)
 ):
     """
-    Create a new spaced repetition schedule and add events to Google Calendar.
+    Create a new StudyCore schedule and add events to Google Calendar.
     """
     
     # Get user's OAuth token

@@ -33,7 +33,7 @@ class EmailService:
         
         # Email body
         body = f"""
-New feedback received from Spaced Repetition Scheduler!
+New feedback received from StudyCore!
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -51,7 +51,7 @@ MESSAGE:
 Submitted: {feedback_data.get('created_at', datetime.now().strftime('%Y-%m-%d %H:%M:%S'))}
 
 ---
-Spaced Repetition Scheduler Feedback System
+StudyCore Feedback System
         """
         
         message.set_content(body)

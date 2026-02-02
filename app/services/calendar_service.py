@@ -15,7 +15,7 @@ class CalendarService:
     
     def generate_review_dates(self, start_date: date, intervals: List[int]) -> List[date]:
         """
-        Generate review dates based on spaced repetition intervals.
+        Generate review dates based on StudyCore intervals.
         
         Args:
             start_date: The date to start from
@@ -51,7 +51,7 @@ class CalendarService:
                 f'Spaced repetition review for: {topic}\n\n'
                 f'Interval: {interval_days} day{"s" if interval_days != 1 else ""}\n'
                 f'Review this material to strengthen long-term retention.\n\n'
-                f'Created by Spaced Repetition Scheduler'
+                f'Created by StudyCore'
             ),
             'start': {
                 'date': review_date.isoformat(),
@@ -82,7 +82,7 @@ class CalendarService:
         calendar_id: str = 'primary'
     ) -> Dict[str, Any]:
         """
-        Create a complete spaced repetition schedule.
+        Create a complete StudyCore schedule.
         
         Args:
             topic: The subject being studied

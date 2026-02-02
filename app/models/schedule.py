@@ -8,6 +8,7 @@ class Schedule(Base):
     
     id = Column(String, primary_key=True)
     user_id = Column(String, ForeignKey("users.id"), nullable=False)
+    topic_id = Column(String, ForeignKey("topics.id"), nullable=True)
     
     # Schedule details
     topic = Column(String, nullable=False)
@@ -17,10 +18,11 @@ class Schedule(Base):
     # Google Calendar integration
     calendar_event_ids = Column(JSON)  # List of created event IDs
     calendar_id = Column(String, default="primary")
-    
+
     # Metadata
     created_at = Column(DateTime, default=datetime.utcnow)
     completed = Column(Integer, default=0)  # Number of reviews completed
     
     # Relationships
     user = relationship("User", back_populates="schedules")
+    topic = relationship("Topic", back_populates="schedules")
