@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spaced Repetition Scheduler</title>
-    <meta name="description" content="Automatically schedule science-backed review sessions in your Google Calendar. Master any subject with spaced repetition.">
-
-    <meta name="google-site-verification" content="Nza8WDQpVuF7Miql6Wjfb2cHvHkaLaHmWFLhNrRZkP8">
-
+    <title>StudyCore - Study Smarter, Not Harder</title>
+    <meta name="description" content="Active recall, spaced repetition, and study tools built for Nigerian university students. Master your courses with science-backed learning.">
+    <meta name="google-site-verification" content="YOUR_VERIFICATION_CODE">
+    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -28,6 +27,20 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+        }
+        
+        .logo {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            letter-spacing: -1px;
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            margin-bottom: 2rem;
+            font-weight: 500;
         }
         
         .hero h1 {
@@ -85,8 +98,15 @@
             text-align: center;
             font-size: 2.5rem;
             font-weight: 800;
-            margin-bottom: 3rem;
+            margin-bottom: 1rem;
             color: #1a1a1a;
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 3rem;
         }
         
         .feature-grid {
@@ -123,80 +143,59 @@
             line-height: 1.6;
         }
         
-        /* How It Works */
-        .how-it-works {
-            padding: 5rem 2rem;
-            background: white;
+        /* Stats Section */
+        .stats {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
         }
         
-        .steps {
+        .stats h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 2rem;
-            max-width: 1000px;
+            max-width: 800px;
             margin: 0 auto;
         }
         
-        .step {
-            text-align: center;
-            padding: 2rem;
+        .stat-item {
+            padding: 1rem;
         }
         
-        .step-number {
-            display: inline-block;
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border-radius: 50%;
-            font-size: 1.5rem;
-            font-weight: bold;
-            line-height: 60px;
-            margin-bottom: 1rem;
-        }
-        
-        .step h3 {
+        .stat-value {
+            font-size: 3rem;
+            font-weight: 900;
             margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            padding: 5rem 2rem;
+            text-align: center;
+            background: white;
+        }
+        
+        .cta-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
             color: #1a1a1a;
         }
         
-        .step p {
-            color: #666;
-            line-height: 1.6;
-        }
-        
-        /* Feedback Section */
-        .feedback {
-            padding: 5rem 2rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            text-align: center;
-        }
-        
-        .feedback h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .feedback p {
+        .cta-section p {
             font-size: 1.2rem;
+            color: #666;
             margin-bottom: 2rem;
-            opacity: 0.95;
-        }
-        
-        .feedback-button {
-            display: inline-block;
-            background: white;
-            color: #667eea;
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 700;
-            transition: transform 0.2s;
-        }
-        
-        .feedback-button:hover {
-            transform: scale(1.05);
         }
         
         /* Footer */
@@ -217,21 +216,16 @@
             text-decoration: underline;
         }
         
-        .social-links {
-            margin-top: 1rem;
-        }
-        
         /* Responsive */
         @media (max-width: 768px) {
             .hero { padding: 3rem 1rem; }
             .section-title { font-size: 2rem; }
+            .logo { font-size: 2rem; }
         }
     </style>
-    {% include "base_analytics.html" %}
 </head>
 <body>
     {% if user %}
-    <!-- Logged-in user sees dashboard link -->
     <div style="position: fixed; top: 1rem; right: 1rem; z-index: 1000;">
         <a href="/dashboard" style="background: white; color: #667eea; padding: 0.75rem 1.5rem; border-radius: 50px; text-decoration: none; font-weight: 600; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
             Go to Dashboard →
@@ -241,11 +235,12 @@
     
     <!-- Hero Section -->
     <section class="hero">
-        <h1>Spaced Repetition Scheduler
-      </h1>
-        <p>Automatically create science-backed review schedules in your Google Calendar. Our app uses spaced repetition intervals (1, 3, 7, 21 days) to help students and learners remember what they study. Simply enter a topic, and we'll schedule your review sessions automatically.
-      </p>
-    
+        <div class="logo">📚 StudyCore</div>
+        <div class="tagline">Study smarter, not harder. Built for Nigerian students.</div>
+        
+        <h1>Master Your Courses with Active Recall</h1>
+        <p>Stop cramming. Start learning. Science-backed tools that force you to think, not just read.</p>
+        
         {% if user %}
         <a href="/dashboard" class="cta-button">
             <span>Open Dashboard</span>
@@ -258,133 +253,110 @@
                 <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
             </svg>
-            <span>Sign in with Google</span>
+            <span>Start Free - Sign in with Google</span>
         </a>
         {% endif %}
         
         <div class="trust-badge">
-            ✓ Free forever &nbsp;•&nbsp; ✓ No credit card required &nbsp;•&nbsp; ✓ Privacy-first
+            ✓ 100% Free &nbsp;•&nbsp; ✓ Built by a Nigerian student &nbsp;•&nbsp; ✓ No BS, just results
         </div>
     </section>
-
-    <!-- About Section - For Verification Clarity -->
-<section style="background: white; padding: 3rem 2rem; text-align: center;">
-    <div class="container" style="max-width: 800px; margin: 0 auto;">
-        <h2 style="font-size: 2rem; margin-bottom: 1rem; color: #1a1a1a;">
-            What is Spaced Repetition Scheduler?
-        </h2>
-        <p style="font-size: 1.2rem; line-height: 1.8; color: #555;">
-            <strong>Spaced Repetition Scheduler</strong> is a free web application that automatically 
-            creates study review schedules in your Google Calendar. When you sign in with your Google 
-            account and enter a topic you're learning (like "Python Programming" or "Organic Chemistry"), 
-            our app creates calendar events on scientifically-proven intervals (default: 1, 3, 7, and 21 
-            days later) to help you review and retain information long-term. We only create new calendar 
-            events - we never read, modify, or delete your existing calendar data. This app is completely 
-            free and built to help students and lifelong learners master any subject.
-        </p>
-    </div>
-</section>
     
     <!-- Features Section -->
     <section class="features">
         <div class="container">
-            <h2 class="section-title">Why Spaced Repetition Works</h2>
+            <h2 class="section-title">Why StudyCore Works</h2>
+            <p class="section-subtitle">Based on cognitive science, built for Nigerian universities</p>
             
             <div class="feature-grid">
                 <div class="feature-card">
-                    <div class="feature-icon">🧪</div>
-                    <h3>Science-Backed</h3>
-                    <p>Based on decades of research showing that reviewing material at increasing intervals improves long-term retention by up to 200%.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">⚡</div>
-                    <h3>Instant Setup</h3>
-                    <p>Sign in with Google, type your topic, and we'll create your entire review schedule in seconds. No manual calendar editing needed.</p>
+                    <div class="feature-icon">🧠</div>
+                    <h3>Active Recall</h3>
+                    <p>Force yourself to explain topics from memory. The science shows this is 200% more effective than re-reading notes.</p>
                 </div>
                 
                 <div class="feature-card">
                     <div class="feature-icon">📅</div>
-                    <h3>Calendar Integration</h3>
-                    <p>Reviews appear directly in Google Calendar with reminders. Works seamlessly across all your devices - phone, tablet, desktop.</p>
+                    <h3>Spaced Repetition</h3>
+                    <p>Automatically schedule reviews at optimal intervals (1, 3, 7, 21 days). Review at exactly the right time to lock in long-term memory.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Explain Mode</h3>
+                    <p>Set a timer. Explain the topic out loud like you're teaching. Identify what you don't know. This is how real learning happens.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Track Progress</h3>
+                    <p>See your study streaks, completion rates, and weak spots. Know exactly where to focus your energy.</p>
                 </div>
                 
                 <div class="feature-card">
                     <div class="feature-icon">🎯</div>
-                    <h3>Customizable Intervals</h3>
-                    <p>Use our proven defaults (1, 3, 7, 21 days) or create your own schedule. Perfect for students, professionals, and lifelong learners.</p>
+                    <h3>No Distractions</h3>
+                    <p>No flashy gamification. No social media features. Just you and the material. Pure focus on learning.</p>
                 </div>
                 
                 <div class="feature-card">
-                    <div class="feature-icon">🔒</div>
-                    <h3>Privacy-First</h3>
-                    <p>We only create events - never read your existing calendar. Your data is yours. No ads, no tracking, no selling your information.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">💰</div>
-                    <h3>100% Free</h3>
-                    <p>No hidden fees, no premium tiers, no credit card required. Built by learners, for learners. Use it as much as you want.</p>
+                    <div class="feature-icon">🇳🇬</div>
+                    <h3>Built for Naija</h3>
+                    <p>Made by a Nigerian student who understands the stress, the syllabus, and the exam pressure. This is for us.</p>
                 </div>
             </div>
         </div>
     </section>
     
-    <!-- How It Works -->
-    <section class="how-it-works">
+    <!-- Stats Section -->
+    <section class="stats">
         <div class="container">
-            <h2 class="section-title">How It Works</h2>
+            <h2>Join Students Getting Results</h2>
             
-            <div class="steps">
-                <div class="step">
-                    <div class="step-number">1</div>
-                    <h3>Sign In</h3>
-                    <p>Connect with your Google account in one click. Quick and secure.</p>
+            <div class="stat-grid">
+                <div class="stat-item">
+                    <div class="stat-value">200%</div>
+                    <div class="stat-label">Better Retention</div>
                 </div>
                 
-                <div class="step">
-                    <div class="step-number">2</div>
-                    <h3>Enter Topic</h3>
-                    <p>Type what you're studying - a subject, chapter, or skill you want to master.</p>
+                <div class="stat-item">
+                    <div class="stat-value">15min</div>
+                    <div class="stat-label">Daily Practice</div>
                 </div>
                 
-                <div class="step">
-                    <div class="step-number">3</div>
-                    <h3>Get Schedule</h3>
-                    <p>We create optimized review dates in your calendar automatically.</p>
-                </div>
-                
-                <div class="step">
-                    <div class="step-number">4</div>
-                    <h3>Review & Remember</h3>
-                    <p>Get reminders on review days. Follow the schedule and watch your retention soar.</p>
+                <div class="stat-item">
+                    <div class="stat-value">100%</div>
+                    <div class="stat-label">Free Forever</div>
                 </div>
             </div>
         </div>
     </section>
     
-    <!-- Feedback Section -->
-    <section class="feedback">
+    <!-- CTA Section -->
+    <section class="cta-section">
         <div class="container">
-            <h2>Help Us Build Better</h2>
-            <p>Have an idea? Want a new feature? We're listening.</p>
-            <a href="/feedback" class="feedback-button">Share Your Feedback →</a>
+            <h2>Ready to Stop Cramming?</h2>
+            <p>Start learning the way your brain actually works.</p>
+            
+            {% if user %}
+            <a href="/dashboard" class="cta-button">Go to Dashboard →</a>
+            {% else %}
+            <a href="/auth/login" class="cta-button">Start Free - No Credit Card</a>
+            {% endif %}
         </div>
     </section>
-
+    
     <!-- Footer -->
     <footer>
         <div class="container">
-            <p>&copy; 2026 Spaced Repetition Scheduler. Built with ❤️ for learners.</p>
+            <p>&copy; 2026 StudyCore. Built with ❤️ for Nigerian students.</p>
             <div style="margin-top: 1rem;">
                 <a href="/privacy">Privacy Policy</a>
                 <a href="/terms">Terms of Service</a>
                 <a href="/feedback">Feedback</a>
             </div>
-            <div class="social-links">
-                <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.7;">
-                    Created by <a href="mailto:goodnewsokpubigho22@gmail.com">Efetobo Okpubigho</a>
-                </p>
+            <div style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.7;">
+                <p>Created by <a href="https://linkedin.com/in/goodnews-okpubigho" target="_blank">Goodnews Okpubigho</a></p>
             </div>
         </div>
     </footer>

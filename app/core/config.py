@@ -1,19 +1,19 @@
 from pydantic_settings import BaseSettings
 from typing import List
 from app.db.persistent import get_database_url
-from dotenv import load_dotenv  # ADD THIS
-import os  # ADD THIS
+from dotenv import load_dotenv
+import os
 
-# ADD THIS LINE - Force load .env file
 load_dotenv()
 
 class Settings(BaseSettings):
-    # App
-    APP_NAME: str = "Spaced Repetition Scheduler"
-    SECRET_KEY: str
+    # App - UPDATED
+    APP_NAME: str = "StudyCore"
+    APP_TAGLINE: str = "Study smarter, not harder. Built for Nigerian students."
     ENVIRONMENT: str = "development"
+    SECRET_KEY: str
     
-    # Database - UPDATE THIS LINE
+    # Database
     DATABASE_URL: str = get_database_url()
     
     # Google OAuth
@@ -25,7 +25,7 @@ class Settings(BaseSettings):
     DEFAULT_INTERVALS: str = "1,3,7,21"
     TIMEZONE: str = "Africa/Lagos"
     
-    # Email - ADD THESE WITH DEFAULTS
+    # Email
     EMAIL_USER: str = os.getenv("EMAIL_USER", "")
     EMAIL_PASSWORD: str = os.getenv("EMAIL_PASSWORD", "")
     EMAIL_RECIPIENT: str = os.getenv("EMAIL_RECIPIENT", "")
@@ -36,6 +36,6 @@ class Settings(BaseSettings):
     
     class Config:
         env_file = ".env"
-        case_sensitive = False  # ADD THIS
+        case_sensitive = False
 
 settings = Settings()
