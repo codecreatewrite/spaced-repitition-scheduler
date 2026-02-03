@@ -81,6 +81,7 @@ class ScheduleCRUD:
             id=str(uuid.uuid4()),
             user_id=schedule_data['user_id'],
             topic=schedule_data['topic'],
+            topic_id=schedule_data.get('topic_id'),
             start_date=schedule_data['start_date'],
             intervals=schedule_data['intervals'],
             calendar_id=schedule_data.get('calendar_id', 'primary'),

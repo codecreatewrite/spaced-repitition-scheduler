@@ -1,4 +1,3 @@
-from app.services.analytics_service import AnalyticsService
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
@@ -37,7 +36,7 @@ async def create_schedule(
     db: Session = Depends(get_db)
 ):
     """
-    Create a new StudyCore schedule and add events to Google Calendar.
+    Create a new spaced repetition schedule and add events to Google Calendar.
     """
     
     # Get user's OAuth token
@@ -89,6 +88,7 @@ async def create_schedule(
         schedule_data = {
             'user_id': current_user.id,
             'topic': request.topic,
+            'topic_id': None,  # ✅ Set to None for now (can link to Topic later)
             'start_date': start_date,
             'intervals': intervals,
             'calendar_id': request.calendar_id,
@@ -96,8 +96,6 @@ async def create_schedule(
         }
         
         schedule = ScheduleCRUD.create(db, schedule_data)
-
-        AnalyticsService.update_schedule_created(db, current_user.id, len(event_ids))
         
         return {
             'success': True,

@@ -12,11 +12,12 @@ class Topic(Base):
     
     # Topic info
     title = Column(String, nullable=False)
-    subject = Column(String)  # e.g., "Organic Chemistry", "Anatomy"
-    difficulty = Column(Integer, default=3)  # 1-5 scale
+    subject = Column(String, nullable=True)  # e.g., "Anatomy", "Chemistry"
+    description = Column(Text, nullable=True)  # Optional notes
     
     # Tracking
     total_explains = Column(Integer, default=0)
+    avg_confidence = Column(Integer, default=0)  # 1-5 scale
     last_explained = Column(DateTime, nullable=True)
     
     # Timestamps
@@ -25,7 +26,8 @@ class Topic(Base):
     
     # Relationships
     explain_sessions = relationship("ExplainSession", back_populates="topic", cascade="all, delete-orphan")
-    schedules = relationship("Schedule", back_populates="topic")  # Must match Schedule's back_populates
+    schedules = relationship("Schedule",back_populates="topic_relation", cascade="all, delete-orphan"
+    )
 
 
 class ExplainSession(Base):
@@ -38,11 +40,13 @@ class ExplainSession(Base):
     
     # Session data
     duration_seconds = Column(Integer)  # How long they explained
-    struggles = Column(Text)  # What they struggled with
-    forgot = Column(Text)  # What they forgot
-    unclear = Column(Text)  # What felt unclear
     
-    confidence = Column(Integer)  # 1-5: How confident they felt
+    # The three critical questions
+    struggles = Column(Text, nullable=True)  # What they struggled with
+    forgot = Column(Text, nullable=True)     # What they forgot
+    unclear = Column(Text, nullable=True)    # What felt unclear
+    
+    confidence = Column(Integer, nullable=True)  # 1-5: How confident they felt
     
     # Timestamps
     created_at = Column(DateTime, default=datetime.utcnow)

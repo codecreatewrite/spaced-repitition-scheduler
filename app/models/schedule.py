@@ -9,21 +9,22 @@ class Schedule(Base):
     id = Column(String, primary_key=True)
     user_id = Column(String, ForeignKey("users.id"), nullable=False)
     
-    # Foreign key to topics table
+    # Topic linkage (FIXED - added ForeignKey)
     topic_id = Column(String, ForeignKey("topics.id"), nullable=True)
     
     # Schedule details
+    topic = Column(String, nullable=False)  # Keep this for backward compatibility
     start_date = Column(DateTime, nullable=False)
-    intervals = Column(JSON, nullable=False)  # [1, 3, 7, 21]
+    intervals = Column(JSON, nullable=False)
     
     # Google Calendar integration
-    calendar_event_ids = Column(JSON)  # List of created event IDs
+    calendar_event_ids = Column(JSON)
     calendar_id = Column(String, default="primary")
     
     # Metadata
     created_at = Column(DateTime, default=datetime.utcnow)
-    completed = Column(Integer, default=0)  # Number of reviews completed
+    completed = Column(Integer, default=0)
     
-    # Relationships
+    # Relationships (FIXED - now has proper FK backing)
     user = relationship("User", back_populates="schedules")
-    topic = relationship("Topic", back_populates="schedules")  # Must match Topic's back_populates
+    topic_relation = relationship("Topic", back_populates="schedules")  # Renamed to avoid conflict

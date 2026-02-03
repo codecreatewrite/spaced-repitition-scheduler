@@ -14,7 +14,7 @@
     <meta property="og:title" content="StudyCore - Study Smarter, Not Harder">
     <meta property="og:description" content="Free active recall and spaced repetition tools for Nigerian university students. Integrate with Google Calendar to never forget what you learn.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://studycore.com.ng">
+    <meta property="og:url" content="https://studycore.ng">
     <meta property="og:site_name" content="StudyCore">
     
     <!-- Twitter Card -->
@@ -32,6 +32,30 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
             color: #1a1a1a;
             overflow-x: hidden;
+        }
+        
+        /* Purpose Statement Box */
+        .purpose-box {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            max-width: 700px;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        
+        .purpose-box h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: white;
+        }
+        
+        .purpose-box p {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: rgba(255,255,255,0.95);
         }
         
         /* Hero Section */
@@ -239,6 +263,7 @@
             .hero { padding: 3rem 1rem; }
             .section-title { font-size: 2rem; }
             .logo { font-size: 2rem; }
+            .purpose-box { padding: 1rem; }
         }
     </style>
 </head>
@@ -253,6 +278,18 @@
     
     <!-- Hero Section -->
     <section class="hero">
+        <!-- CRITICAL: Clear Purpose Statement for Google Verification -->
+        <div class="purpose-box">
+            <h2>🎯 What is StudyCore?</h2>
+            <p>
+                StudyCore is a <strong>free learning platform</strong> designed specifically for Nigerian university students. 
+                We help you remember what you study using two scientifically-proven methods: 
+                <strong>active recall</strong> (explaining topics from memory) and <strong>spaced repetition</strong> 
+                (automatic review scheduling). Our app integrates with Google Calendar to schedule your review sessions 
+                at optimal intervals, ensuring you never forget what you've learned.
+            </p>
+        </div>
+        
         <div class="logo">📚 StudyCore</div>
         <div class="tagline">Study smarter, not harder. Built for Nigerian students.</div>
         
@@ -276,10 +313,10 @@
         {% endif %}
         
         <div class="trust-badge">
-            ✓ 100% Free &nbsp;•&nbsp; ✓ Built by a Nigerian student &nbsp;•&nbsp; ✓ No BS, just results
+            ✓ 100% Free Forever &nbsp;•&nbsp; ✓ Built by a Nigerian student &nbsp;•&nbsp; ✓ No BS, just results
         </div>
     </section>
-    
+   
     <!-- Features Section -->
     <section class="features">
         <div class="container">

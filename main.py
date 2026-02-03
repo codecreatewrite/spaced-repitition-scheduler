@@ -3,7 +3,7 @@ from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from contextlib import asynccontextmanager
-from app.api import auth, schedules, feedback, analytics
+from app.api import auth, schedules, feedback, analytics, topics
 from app.core.config import settings
 from app.core.dependencies import get_current_user_optional
 from app.models.user import User
@@ -21,7 +21,12 @@ async def lifespan(app: FastAPI):
     print("👋 Shutting down...")
 
 # UPDATE THIS LINE: Add lifespan
-app = FastAPI(title=settings.APP_NAME, lifespan=lifespan)
+app = FastAPI(
+    title="StudyCore API",
+    description="Active recall and spaced repetition tools for Nigerian students",
+    version="1.0.0",
+    lifespan=lifespan
+)
 
 templates = Jinja2Templates(directory="app/templates")
 
@@ -30,6 +35,7 @@ app.include_router(auth.router)
 app.include_router(schedules.router)
 app.include_router(feedback.router)
 app.include_router(analytics.router)
+app.include_router(topics.router)
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request, user: User = Depends(get_current_user_optional)):
