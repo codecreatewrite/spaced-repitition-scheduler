@@ -21,12 +21,7 @@ async def lifespan(app: FastAPI):
     print("👋 Shutting down...")
 
 # UPDATE THIS LINE: Add lifespan
-app = FastAPI(
-    title="StudyCore API",
-    description="Active recall and spaced repetition tools for Nigerian students",
-    version="1.0.0",
-    lifespan=lifespan
-)
+app = FastAPI(title=settings.APP_NAME, lifespan=lifespan)
 
 templates = Jinja2Templates(directory="app/templates")
 
