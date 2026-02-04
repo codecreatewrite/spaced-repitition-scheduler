@@ -37,7 +37,7 @@ app.include_router(feedback.router)
 app.include_router(analytics.router)
 app.include_router(topics.router)
 
-@app.get("/", response_class=HTMLResponse)
+@app.api_route("/", methods=["GET", "HEAD"], response_class=HTMLResponse)
 async def home(request: Request, user: User = Depends(get_current_user_optional)):
     """Landing page"""
     return templates.TemplateResponse(
@@ -89,7 +89,7 @@ async def explain_mode(
     
     return templates.TemplateResponse("explain.html", {"request": request, "user": user})
 
-@app.get("/feedback", response_class=HTMLResponse)
+@app.api_route("/feedback", methods=["GET", "HEAD"], response_class=HTMLResponse)
 async def feedback_page(request: Request):
     """Feedback page"""
     return templates.TemplateResponse("feedback.html", {"request": request, "settings": settings})
@@ -101,12 +101,12 @@ async def admin_feedback(request: Request, user: User = Depends(get_current_user
         return RedirectResponse(url="/")
     return templates.TemplateResponse("admin_feedback.html", {"request": request})
 
-@app.get("/privacy", response_class=HTMLResponse)
+@app.api_route("/privacy", methods=["GET", "HEAD"], response_class=HTMLResponse)
 async def privacy(request: Request):
     """Privacy Policy"""
     return templates.TemplateResponse("privacy.html", {"request": request})
 
-@app.get("/terms", response_class=HTMLResponse)
+@app.api_route("/terms", methods=["GET", "HEAD"], response_class=HTMLResponse)
 async def terms(request: Request):
     """Terms of Service"""
     return templates.TemplateResponse("terms.html", {"request": request})
