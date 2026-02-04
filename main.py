@@ -59,12 +59,35 @@ async def dashboard(request: Request, user: User = Depends(get_current_user_opti
         {"request": request, "user": user, "settings": settings}
     )
 
+@app.get("/topics", response_class=HTMLResponse)
+async def topics_page(request: Request, user: User = Depends(get_current_user_optional)):
+    """Topics page - list and manage topics"""
+    if not user:
+        return RedirectResponse(url="/")
+    
+    return templates.TemplateResponse(
+        "topics.html", 
+        {"request": request, "user": user, "settings": settings}
+    )
+
 @app.get("/analytics", response_class=HTMLResponse)
 async def analytics_page(request: Request, user: User = Depends(get_current_user_optional)):
     """Analytics page"""
     if not user:
         return RedirectResponse(url="/")
     return templates.TemplateResponse("analytics.html", {"request": request, "user": user, "settings": settings})
+
+@app.get("/explain/{topic_id}", response_class=HTMLResponse)
+async def explain_mode(
+    topic_id: str,
+    request: Request,
+    user: User = Depends(get_current_user_optional)
+):
+    """Explain Mode page"""
+    if not user:
+        return RedirectResponse(url="/")
+    
+    return templates.TemplateResponse("explain.html", {"request": request, "user": user})
 
 @app.get("/feedback", response_class=HTMLResponse)
 async def feedback_page(request: Request):

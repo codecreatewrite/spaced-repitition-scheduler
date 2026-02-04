@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explain Mode - StudyCore</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+        .topic-info {
+            background: rgba(255,255,255,0.1);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        .topic-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+        .topic-subject {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        .timer-display {
+            font-size: 8rem;
+            font-weight: 900;
+            margin: 2rem 0;
+            font-variant-numeric: tabular-nums;
+        }
+        .phase-instruction {
+            background: rgba(255,255,255,0.15);
+            padding: 2rem;
+            border-radius: 16px;
+            margin: 2rem 0;
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+        .phase-instruction strong {
+            display: block;
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+        .controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        .btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .btn:hover {
+            transform: scale(1.05);
+        }
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        .progress-fill {
+            height: 100%;
+            background: white;
+            transition: width 1s linear;
+        }
+        .reflection-form {
+            display: none;
+            background: white;
+            color: #333;
+            padding: 2rem;
+            border-radius: 16px;
+            text-align: left;
+        }
+        .reflection-form.active {
+            display: block;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #667eea;
+        }
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            min-height: 80px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        .confidence-scale {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: space-between;
+        }
+        .confidence-btn {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .confidence-btn:hover {
+            border-color: #667eea;
+        }
+        .confidence-btn.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Timer Phase -->
+        <div id="timerPhase">
+            <div class="topic-info">
+                <div class="topic-title" id="topicTitle">Loading...</div>
+                <div class="topic-subject" id="topicSubject"></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            
+            <div class="timer-display" id="timerDisplay">5:00</div>
+            
+            <div class="phase-instruction">
+                <strong>🎯 Your Mission</strong>
+                Explain this topic out loud like you're teaching someone who knows nothing about it.
+                <br><br>
+                Don't look at notes. Don't try to be perfect. Just explain what you remember.
+                <br><br>
+                The struggle is the point. It shows you what you actually know vs what you only THINK you know.
+            </div>
+            
+            <div class="controls">
+                <button class="btn" id="startBtn" onclick="startTimer()">Start Explaining</button>
+                <button class="btn btn-secondary" onclick="skipToReflection()">Skip to Reflection</button>
+            </div>
+        </div>
+        
+        <!-- Reflection Phase -->
+        <div id="reflectionPhase" class="reflection-form">
+            <h2 style="color: #667eea; margin-bottom: 1.5rem;">📝 Reflection Time</h2>
+            <p style="margin-bottom: 2rem; color: #666;">This is where real learning happens. Be honest about what you struggled with.</p>
+            
+            <form id="reflectionForm">
+                <div class="form-group">
+                    <label>What did you struggle to explain?</label>
+                    <textarea id="struggles" placeholder="e.g., I couldn't remember the specific mechanisms..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>What did you completely forget?</label>
+                    <textarea id="forgot" placeholder="e.g., I forgot the entire section on..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>What still feels unclear?</label>
+                    <textarea id="unclear" placeholder="e.g., I understand the concept but not how it applies..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>How confident do you feel? (1 = Lost, 5 = Could teach this)</label>
+                    <div class="confidence-scale">
+                        <button type="button" class="confidence-btn" onclick="selectConfidence(1)">1<br>😰</button>
+                        <button type="button" class="confidence-btn" onclick="selectConfidence(2)">2<br>😕</button>
+                        <button type="button" class="confidence-btn" onclick="selectConfidence(3)">3<br>😐</button>
+                        <button type="button" class="confidence-btn" onclick="selectConfidence(4)">4<br>😊</button>
+                        <button type="button" class="confidence-btn" onclick="selectConfidence(5)">5<br>🎯</button>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn" style="width: 100%; background: #667eea; color: white;">Save & Schedule Review</button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        const topicId = window.location.pathname.split('/').pop();
+        let timerInterval;
+        let timeRemaining = 300; // 5 minutes in seconds
+        let selectedConfidence = null;
+        let startTime;
+        
+        // Load topic details
+        async function loadTopic() {
+            try {
+                const response = await fetch(`/api/topics/${topicId}`);
+                const data = await response.json();
+                
+                document.getElementById('topicTitle').textContent = data.title;
+                if (data.subject) {
+                    document.getElementById('topicSubject').textContent = data.subject;
+                }
+            } catch (error) {
+                console.error('Error loading topic:', error);
+            }
+        }
+        
+        function startTimer() {
+            startTime = Date.now();
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('startBtn').textContent = 'Explaining...';
+            
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateDisplay();
+                
+                if (timeRemaining <= 0) {
+                    endTimer();
+                }
+            }, 1000);
+        }
+        
+        function updateDisplay() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            document.getElementById('timerDisplay').textContent = 
+                `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            const progress = ((300 - timeRemaining) / 300) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+        }
+        
+        function endTimer() {
+            clearInterval(timerInterval);
+            document.getElementById('timerPhase').style.display = 'none';
+            document.getElementById('reflectionPhase').classList.add('active');
+        }
+        
+        function skipToReflection() {
+            if (confirm('Skip the timer? You can still fill out the reflection.')) {
+                startTime = Date.now();
+                timeRemaining = 0;
+                endTimer();
+            }
+        }
+        
+        function selectConfidence(level) {
+            selectedConfidence = level;
+            document.querySelectorAll('.confidence-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            event.target.closest('.confidence-btn').classList.add('selected');
+        }
+        
+        document.getElementById('reflectionForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (selectedConfidence === null) {
+                alert('Please select a confidence level');
+                return;
+            }
+            
+            const durationSeconds = Math.floor((Date.now() - startTime) / 1000);
+            
+            const sessionData = {
+                topic_id: topicId,
+                duration_seconds: durationSeconds,
+                struggles: document.getElementById('struggles').value,
+                forgot: document.getElementById('forgot').value,
+                unclear: document.getElementById('unclear').value,
+                confidence: selectedConfidence
+            };
+            
+            try {
+                const response = await fetch('/api/topics/explain', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(sessionData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Redirect to schedule creation with this topic
+                    window.location.href = `/dashboard?schedule_topic=${topicId}`;
+                } else {
+                    alert('Error saving session');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        });
+        
+        // Load topic on page load
+        loadTopic();
+    </script>
+</body>
+</html>
