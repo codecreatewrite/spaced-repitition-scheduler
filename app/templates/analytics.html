@@ -168,58 +168,89 @@
                 
                 const container = document.getElementById('statsContainer');
                 
-                container.innerHTML = `
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-icon">📚</div>
-                            <div class="stat-value">${data.total_schedules}</div>
-                            <div class="stat-label">Schedules Created</div>
-                        </div>
-                        
-                        <div class="stat-card">
-                            <div class="stat-icon">📅</div>
-                            <div class="stat-value">${data.total_events}</div>
-                            <div class="stat-label">Review Events</div>
-                        </div>
-                        
-                        <div class="stat-card">
-                            <div class="stat-icon">🔥</div>
-                            <div class="stat-value">${data.current_streak}</div>
-                            <div class="stat-label">Day Streak</div>
-                        </div>
-                        
-                        <div class="stat-card">
-                            <div class="stat-icon">🏆</div>
-                            <div class="stat-value">${data.longest_streak}</div>
-                            <div class="stat-label">Longest Streak</div>
-                        </div>
-                    </div>
-                    
-                    <div class="card">
-                        <h3>📈 Recent Activity</h3>
-                        <div style="color: #666; margin-bottom: 1rem;">
-                            <p><strong>Member since:</strong> ${data.member_since}</p>
-                            <p><strong>Last active:</strong> ${data.last_active}</p>
-                            <p><strong>Total sessions:</strong> ${data.total_sessions}</p>
-                        </div>
-                    </div>
-                    
-                    ${data.recent_topics.length > 0 ? `
-                    <div class="card">
-                        <h3>🎯 Recent Schedules</h3>
-                        ${data.recent_topics.map(topic => `
-                            <div class="recent-item">
-                                <div>
-                                    <div class="recent-topic">${topic.topic}</div>
-                                    <div class="recent-meta">Created ${topic.created}</div>
-                                </div>
-                                <div class="badge">${topic.events} events</div>
-                            </div>
-                        `).join('')}
-                    </div>
-                    ` : ''}
-                `;
-                
+              container.innerHTML = `
+                  <div class="stats-grid">
+                      <div class="stat-card">
+                         <div class="stat-icon">📚</div>
+                          <div class="stat-value">${data.total_schedules}</div>
+                          <div class="stat-label">Schedules Created</div>
+                      </div>
+        
+                      <div class="stat-card">
+                          <div class="stat-icon">📅</div>
+                          <div class="stat-value">${data.total_events}</div>
+                          <div class="stat-label">Review Events</div>
+                      </div>
+        
+                      <!-- ADD THESE NEW CARDS -->
+                      <div class="stat-card">
+                          <div class="stat-icon">📖</div>
+                          <div class="stat-value">${data.total_topics || 0}</div>
+                          <div class="stat-label">Topics</div>
+                      </div>
+        
+                      <div class="stat-card">
+                          <div class="stat-icon">🎯</div>
+                          <div class="stat-value">${data.total_explains || 0}</div>
+                          <div class="stat-label">Explain Sessions</div>
+                      </div>
+        
+                      <div class="stat-card">
+                          <div class="stat-icon">⭐</div>
+                          <div class="stat-value">${data.avg_confidence || 0}/5</div>
+                          <div class="stat-label">Avg Confidence</div>
+                      </div>
+        
+                      <div class="stat-card">
+                          <div class="stat-icon">🔥</div>
+                          <div class="stat-value">${data.current_streak}</div>
+                          <div class="stat-label">Day Streak</div>
+                     </div>
+                  </div>
+    
+                  <div class="card">
+                      <h3>📈 Recent Activity</h3>
+                      <div style="color: #666; margin-bottom: 1rem;">
+                          <p><strong>Member since:</strong> ${data.member_since}</p>
+                          <p><strong>Last active:</strong> ${data.last_active}</p>
+                         <p><strong>Total sessions:</strong> ${data.total_sessions}</p>
+                      </div>
+                  </div>
+    
+                  <!-- ADD THIS: Recent Topics Section -->
+                  ${data.recent_topics && data.recent_topics.length > 0 ? `
+                  <div class="card">
+                     <h3>🎯 Recent Topics Explained</h3>
+                      ${data.recent_topics.map(topic => `
+                          <div class="recent-item">
+                              <div>
+                                  <div class="recent-topic">${topic.title}</div>
+                                  <div class="recent-meta">
+                                      ${topic.subject || 'No subject'} • 
+                                      ${topic.explains} explain${topic.explains !== 1 ? 's' : ''} • 
+                                      Avg confidence: ${topic.confidence}/5
+                                  </div>
+                              </div>
+                          </div>
+                      `).join('')}
+                  </div>
+                  ` : ''}
+    
+                  ${data.recent_schedules && data.recent_schedules.length > 0 ? `
+                 <div class="card">
+                      <h3>📅 Recent Schedules</h3>
+                      ${data.recent_schedules.map(schedule => `
+                          <div class="recent-item">
+                              <div>
+                                  <div class="recent-topic">${schedule.topic}</div>
+                                  <div class="recent-meta">Created ${schedule.created}</div>
+                              </div>
+                              <div class="badge">${schedule.events} events</div>
+                          </div>
+                      `).join('')}
+                  </div>
+                  ` : ''}
+              `; 
             } catch (error) {
                 document.getElementById('statsContainer').innerHTML = 
                     '<div class="card"><p style="color: #c33;">Error loading analytics</p></div>';

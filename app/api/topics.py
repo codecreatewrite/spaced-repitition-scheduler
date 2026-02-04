@@ -156,6 +156,10 @@ async def save_explain_session(
     }
     
     session = ExplainSessionCRUD.create(db, session_data)
+
+    # ADD THIS: Update analytics
+    from app.services.analytics_service import AnalyticsService
+    AnalyticsService.update_explain_completed(db, current_user.id)
     
     return {
         "success": True,

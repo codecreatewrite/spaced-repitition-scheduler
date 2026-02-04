@@ -79,6 +79,9 @@
             background: rgba(255,255,255,0.2);
             color: white;
         }
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.3);
+        }
         .progress-bar {
             width: 100%;
             height: 8px;
@@ -142,6 +145,22 @@
             background: #667eea;
             color: white;
             border-color: #667eea;
+        }
+        .success-message {
+            text-align: center;
+            padding: 2rem;
+        }
+        .schedule-prompt {
+            background: #f0f4ff;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        .recommended-days {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #667eea;
+            margin-bottom: 1rem;
         }
     </style>
 </head>
@@ -207,8 +226,13 @@
                     </div>
                 </div>
                 
-                <button type="submit" class="btn" style="width: 100%; background: #667eea; color: white;">Save & Schedule Review</button>
+                <button type="submit" class="btn" style="width: 100%; background: #667eea; color: white;">Save & Continue</button>
             </form>
+        </div>
+        
+        <!-- Success Phase (hidden initially) -->
+        <div id="successPhase" class="reflection-form" style="display: none;">
+            <!-- This will be populated by JavaScript -->
         </div>
     </div>
     
@@ -218,6 +242,18 @@
         let timeRemaining = 300; // 5 minutes in seconds
         let selectedConfidence = null;
         let startTime;
+        
+        // Helper function to get recommended days based on confidence
+        function getRecommendedDays(confidence) {
+            const intervals = {
+                1: 1,  // Struggled badly → review tomorrow
+                2: 2,  // Struggled → review in 2 days
+                3: 3,  // Okay → review in 3 days
+                4: 7,  // Good → review in a week
+                5: 14  // Mastered → review in 2 weeks
+            };
+            return intervals[confidence] || 3;
+        }
         
         // Load topic details
         async function loadTopic() {
@@ -231,6 +267,7 @@
                 }
             } catch (error) {
                 console.error('Error loading topic:', error);
+                document.getElementById('topicTitle').textContent = 'Topic Not Found';
             }
         }
         
@@ -278,7 +315,49 @@
             document.querySelectorAll('.confidence-btn').forEach(btn => {
                 btn.classList.remove('selected');
             });
-            event.target.closest('.confidence-btn').classList.add('selected');
+            event.target.classList.add('selected');
+        }
+        
+        async function scheduleReview() {
+            const days = getRecommendedDays(selectedConfidence);
+            
+            try {
+                // Get topic details first
+                const topicResponse = await fetch(`/api/topics/${topicId}`);
+                const topic = await topicResponse.json();
+                
+                // Calculate start date
+                const startDate = new Date();
+                startDate.setDate(startDate.getDate() + days);
+                
+                // Create schedule
+                const scheduleData = {
+                    topic: `Review: ${topic.title}`,
+                    start_date: startDate.toISOString().split('T')[0],
+                    intervals: `${days}` // Single review for now
+                };
+                
+                const response = await fetch('/api/schedules/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(scheduleData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert(`✅ Review scheduled for ${days} days from now!`);
+                    window.location.href = '/topics';
+                } else {
+                    alert('Error scheduling review');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+        
+        function skipSchedule() {
+            window.location.href = '/topics';
         }
         
         document.getElementById('reflectionForm').addEventListener('submit', async function(e) {
@@ -310,8 +389,45 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    // Redirect to schedule creation with this topic
-                    window.location.href = `/dashboard?schedule_topic=${topicId}`;
+                    // Show success + schedule prompt
+                    const days = getRecommendedDays(selectedConfidence);
+                    
+                    document.getElementById('reflectionPhase').style.display = 'none';
+                    document.getElementById('successPhase').innerHTML = `
+                        <div style="text-align: center; padding: 2rem;">
+                            <div style="font-size: 4rem; margin-bottom: 1rem;">✅</div>
+                            <h2 style="color: #667eea; margin-bottom: 1rem;">Session Saved!</h2>
+                            <p style="color: #666; margin-bottom: 2rem;">
+                                Great work identifying your struggles. That's where learning happens.
+                            </p>
+                            
+                            <div class="schedule-prompt">
+                                <h3 style="color: #667eea; margin-bottom: 1rem;">📅 Schedule Your Review?</h3>
+                                <p style="color: #666; margin-bottom: 1rem;">
+                                    Based on your confidence level (${selectedConfidence}/5), we recommend reviewing in:
+                                </p>
+                                <div class="recommended-days">
+                                    ${days} day${days !== 1 ? 's' : ''}
+                                </div>
+                                <button onclick="scheduleReview()" class="btn" style="width: 100%; margin-bottom: 0.5rem;">
+                                    Yes, Schedule Review
+                                </button>
+                                <button onclick="skipSchedule()" class="btn btn-secondary" style="width: 100%;">
+                                    Skip for Now
+                                </button>
+                            </div>
+                            
+                            <div style="margin-top: 2rem;">
+                                <a href="/topics" style="color: #667eea; text-decoration: none; display: inline-block; margin-right: 1rem;">
+                                    ← Back to Topics
+                                </a>
+                                <a href="/dashboard" style="color: #667eea; text-decoration: none; display: inline-block;">
+                                    Go to Dashboard →
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                    document.getElementById('successPhase').style.display = 'block';
                 } else {
                     alert('Error saving session');
                 }
