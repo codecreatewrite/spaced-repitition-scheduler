@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Include mobile styles -->
+    {% include "_mobile_styles.html" %}
     
     <!-- SEO & Verification -->
     <title>StudyCore - Active Recall & Spaced Repetition for Nigerian Students</title>
@@ -266,6 +269,7 @@
             .purpose-box { padding: 1rem; }
         }
     </style>
+    {% include "base_analytics.html" %}
 </head>
 <body>
     {% if user %}

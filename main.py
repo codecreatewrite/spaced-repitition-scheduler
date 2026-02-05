@@ -3,7 +3,7 @@ from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from contextlib import asynccontextmanager
-from app.api import auth, schedules, feedback, analytics, topics
+from app.api import auth, schedules, feedback, analytics, topics, due_today
 from app.core.config import settings
 from app.core.dependencies import get_current_user_optional
 from app.models.user import User
@@ -36,6 +36,7 @@ app.include_router(schedules.router)
 app.include_router(feedback.router)
 app.include_router(analytics.router)
 app.include_router(topics.router)
+app.include_router(due_today.router)
 
 @app.api_route("/", methods=["GET", "HEAD"], response_class=HTMLResponse)
 async def home(request: Request, user: User = Depends(get_current_user_optional)):
@@ -87,7 +88,7 @@ async def explain_mode(
     if not user:
         return RedirectResponse(url="/")
     
-    return templates.TemplateResponse("explain.html", {"request": request, "user": user})
+    return templates.TemplateResponse("explain.html", {"request": request, "user": user, "settings": settings})
 
 @app.api_route("/feedback", methods=["GET", "HEAD"], response_class=HTMLResponse)
 async def feedback_page(request: Request):

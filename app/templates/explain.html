@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Include mobile styles -->
+    {% include "_mobile_styles.html" %}
+
     <title>Explain Mode - StudyCore</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -163,6 +167,7 @@
             margin-bottom: 1rem;
         }
     </style>
+    {% include "base_analytics.html" %}
 </head>
 <body>
     <div class="container">
@@ -334,7 +339,8 @@
                 const scheduleData = {
                     topic: `Review: ${topic.title}`,
                     start_date: startDate.toISOString().split('T')[0],
-                    intervals: `${days}` // Single review for now
+                    intervals: `${days}`,
+                    topic_id: topic_Id
                 };
                 
                 const response = await fetch('/api/schedules/create', {

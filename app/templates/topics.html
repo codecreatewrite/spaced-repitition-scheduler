@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Include mobile styles -->
+    {% include "_mobile_styles.html" %}
+
     <title>My Topics - StudyCore</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -193,14 +197,15 @@
             margin-bottom: 2rem;
         }
     </style>
+    {% include "base_analytics.html" %}
 </head>
 <body>
     <nav>
         <h2>📚 StudyCore</h2>
         <div class="nav-links">
-            <a href="/dashboard">Dashboard</a>
+            <a href="/dashboard">Home</a>
             <a href="/topics" class="active">Topics</a>
-            <a href="/analytics">Analytics</a>
+            <a href="/analytics">Progress</a>
         </div>
         <div class="user-info">
             {% if user.picture %}
@@ -272,7 +277,7 @@
                 container.innerHTML = data.topics.map(topic => {
                     const confidenceColor = topic.avg_confidence >= 4 ? '#10b981' : 
                                            topic.avg_confidence >= 3 ? '#f59e0b' : '#ef4444';
-    
+
                     return `
                        <div class="topic-card">
                             <div class="topic-title">${topic.title}</div>
@@ -366,8 +371,16 @@
             }
         }
         
-        // Load topics on page load
-        loadTopics();
+        // Load topics on page load and check for prefilled topic
+        window.addEventListener('DOMContentLoaded', function() {
+            const prefilledTopic = localStorage.getItem('prefill_topic');
+            if (prefilledTopic) {
+                document.getElementById('topicTitle').value = prefilledTopic;
+                localStorage.removeItem('prefill_topic');
+                openNewTopicModal();
+            }
+            loadTopics();
+        });
         
         // Close modal when clicking outside
         document.getElementById('newTopicModal').addEventListener('click', function(e) {

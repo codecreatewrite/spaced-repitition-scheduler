@@ -93,10 +93,22 @@ class AnalyticsService:
         # ADD THIS: Get explain session stats
         from app.models.topic import Topic, ExplainSession
     
+        schedules = db.query(Schedule).filter(Schedule.user_id == user_id).all()
         topics = db.query(Topic).filter(Topic.user_id == user_id).all()
         explain_sessions = db.query(ExplainSession).filter(
             ExplainSession.user_id == user_id
         ).all()
+
+        # UPDATE analytics record with fresh counts
+        analytics.total_schedules_created = len(schedules)
+    
+        total_events = 0
+        for s in schedules:
+            if s.calendar_event_ids:
+                total_events += len(s.calendar_event_ids)
+        analytics.total_events_created = total_events
+    
+        db.commit()
     
         # Calculate explain stats
         total_explains = len(explain_sessions)

@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Include mobile styles -->
+    {% include "_mobile_styles.html" %}
+
     <title>Analytics - StudyCore</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -32,7 +36,7 @@
             border-radius: 6px;
             transition: background 0.2s;
         }
-        .nav-links a:hover {
+        .nav-links a:hover, .nav-links a.active {
             background: #f0f0f0;
         }
         .user-info {
@@ -136,10 +140,11 @@
 </head>
 <body>
     <nav>
-        <h2>📚 Spaced Repetition</h2>
+        <h2>📚 StudyCore</h2>
         <div class="nav-links">
-            <a href="/dashboard">Dashboard</a>
-            <a href="/analytics" style="background: #f0f0f0;">Analytics</a>
+            <a href="/dashboard">Home</a>
+            <a href="/topics">Topics</a>
+            <a href="/analytics" class="active">Progress</a>
         </div>
         <div class="user-info">
             {% if user.picture %}

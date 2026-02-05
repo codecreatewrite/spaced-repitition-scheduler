@@ -19,6 +19,7 @@ class CreateScheduleRequest(BaseModel):
     start_date: Optional[str] = Field(None, description="Start date in YYYY-MM-DD format")
     intervals: Optional[str] = Field(None, description="Comma-separated intervals (e.g., '1,3,7,21')")
     calendar_id: str = Field("primary", description="Google Calendar ID")
+    topic_id: Optional[str] = None
 
 class ScheduleResponse(BaseModel):
     id: str
@@ -92,7 +93,8 @@ async def create_schedule(
             'start_date': start_date,
             'intervals': intervals,
             'calendar_id': request.calendar_id,
-            'calendar_event_ids': event_ids
+            'calendar_event_ids': event_ids,
+            'topic_id': request.topic_id
         }
         
         schedule = ScheduleCRUD.create(db, schedule_data)
