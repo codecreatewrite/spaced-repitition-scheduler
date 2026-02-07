@@ -12,8 +12,8 @@ class Topic(Base):
     
     # Topic info
     title = Column(String, nullable=False)
-    subject = Column(String, nullable=True)  # e.g., "Anatomy", "Chemistry"
-    description = Column(Text, nullable=True)  # Optional notes
+    subject = Column(String, nullable=True)
+    description = Column(Text, nullable=True)
     
     # Tracking
     total_explains = Column(Integer, default=0)
@@ -26,8 +26,7 @@ class Topic(Base):
     
     # Relationships
     explain_sessions = relationship("ExplainSession", back_populates="topic", cascade="all, delete-orphan")
-    schedules = relationship("Schedule", back_populates="topic_relation", cascade="all, delete-orphan"
-    )
+    schedules = relationship("Schedule", back_populates="topic_relation", cascade="all, delete-orphan")  # ✅ FIXED
 
 
 class ExplainSession(Base):
@@ -39,14 +38,14 @@ class ExplainSession(Base):
     user_id = Column(String, ForeignKey("users.id"), nullable=False)
     
     # Session data
-    duration_seconds = Column(Integer)  # How long they explained
+    duration_seconds = Column(Integer)
     
     # The three critical questions
-    struggles = Column(Text, nullable=True)  # What they struggled with
-    forgot = Column(Text, nullable=True)     # What they forgot
-    unclear = Column(Text, nullable=True)    # What felt unclear
+    struggles = Column(Text, nullable=True)
+    forgot = Column(Text, nullable=True)
+    unclear = Column(Text, nullable=True)
     
-    confidence = Column(Integer, nullable=True)  # 1-5: How confident they felt
+    confidence = Column(Integer, nullable=True)  # 1-5
     
     # Timestamps
     created_at = Column(DateTime, default=datetime.utcnow)
