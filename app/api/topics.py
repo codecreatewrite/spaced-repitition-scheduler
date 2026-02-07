@@ -80,8 +80,6 @@ def create_or_update_schedule(
             topic=topic_title,
             start_date=datetime.combine(next_review_date, datetime.min.time()),
             intervals=[1, 3, 7, 14],  # Default intervals
-            calendar_event_ids=[],
-            calendar_id="primary",
             completed=0,
             created_at=datetime.utcnow()
         )

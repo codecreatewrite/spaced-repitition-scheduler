@@ -84,8 +84,6 @@ class ScheduleCRUD:
             topic_id=schedule_data.get('topic_id'),
             start_date=schedule_data['start_date'],
             intervals=schedule_data['intervals'],
-            calendar_id=schedule_data.get('calendar_id', 'primary'),
-            calendar_event_ids=schedule_data.get('calendar_event_ids', []),
             created_at=datetime.utcnow()
         )
         db.add(schedule)
