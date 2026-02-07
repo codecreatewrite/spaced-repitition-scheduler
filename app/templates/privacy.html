@@ -36,7 +36,7 @@
     <p>When you use StudyCore, we collect:</p>
     <ul>
         <li><strong>Google Account Information:</strong> Your name, email address, and profile picture from your Google account</li>
-        <li><strong>Calendar Data:</strong> We create study review events in your Google Calendar based on your input</li>
+        <li><strong>Study Data:</strong> Topics you create and your review schedules (stored internally in StudyCore)</li>
         <li><strong>Usage Data:</strong> Topics you create schedules for and your review intervals</li>
     </ul>
 
@@ -44,7 +44,7 @@
     <p>We use your information solely to:</p>
     <ul>
         <li>Authenticate your identity via Google Sign-In</li>
-        <li>Create StudyCore review events in your Google Calendar</li>
+        <li>Schedule and track your study reviews within StudyCore</li>
         <li>Display your schedules in your dashboard</li>
     </ul>
     
@@ -54,14 +54,14 @@
     <h2>4. Data Protection Mechanisms for Sensitive Data</h2>
     <p><strong>How we protect your sensitive information:</strong></p>
 
-    <h3>4.1 Google Calendar Data Protection</h3>
-    <p>Google Calendar access is considered sensitive data under Google's policies. We protect this data through:</p>
+    <h3>4.1 Google OAuth Data Protection</h3>
+    <p>We use Google OAuth solely for secure authentication. We protect your data through:</p>
     <ul>
         <li><strong>Encryption in Transit:</strong> All data transmitted between your browser, our servers, and Google's servers uses HTTPS/TLS 1.3 encryption</li>
         <li><strong>Encryption at Rest:</strong> OAuth tokens are stored encrypted in our PostgreSQL database using AES-256 encryption</li>
-        <li><strong>Access Controls:</strong> Only authenticated users can access their own calendar data - no cross-user data access is possible</li>
-        <li><strong>Token Security:</strong> OAuth refresh tokens are stored with secure hash algorithms and never exposed in logs or error messages</li>
-        <li><strong>Minimal Data Retention:</strong> We only store the minimum calendar data needed (event IDs we created) and do not cache or store your existing calendar events</li>
+        <li><strong>Access Controls:</strong> Only authenticated users can access their own data</li>
+        <li><strong>Token Security:</strong> OAuth tokens are stored securely and never exposed in logs</li>
+        <li><strong>Minimal Data Collection:</strong> We only collect your email and name for authentication</li>
     </ul>
 
     <h3>4.2 Personal Information Protection</h3>
@@ -76,8 +76,8 @@
     <h3>4.3 Data Minimization</h3>
     <p>We follow the principle of data minimization:</p>
     <ul>
-        <li>We only request the calendar.events scope (not full calendar access)</li>
-        <li>We only read the events we create, never your existing calendar data</li>
+        <li>We only request basic profile information (email, name) for authentication</li>
+        <li>We do not access your Google Calendar, Drive, or any other Google services</li>
         <li>We do not collect browsing history, device information, or location data</li>
         <li>We do not use tracking pixels or third-party analytics</li>
     </ul>
@@ -87,7 +87,7 @@
     <ul>
         <li><strong>Account Deletion:</strong> You can delete your account at any time from the dashboard</li>
         <li><strong>Immediate Removal:</strong> Upon account deletion, all your data is permanently removed within 24 hours</li>
-        <li><strong>OAuth Revocation:</strong> You can revoke Google Calendar access at any time via your Google Account settings</li>
+        <li><strong>OAuth Revocation:</strong> You can revoke Google access at any time via your Google Account settings</li>
         <li><strong>Automatic Cleanup:</strong> Inactive accounts (12+ months) are automatically flagged for deletion</li>
     </ul>
 
@@ -108,22 +108,15 @@
         <li><strong>PostgreSQL:</strong> Open-source database with enterprise-grade security features</li>
     </ul>
 
-    <h2>5. Google Calendar Access</h2>
-    <p>We request access to your Google Calendar solely to:</p>
+    <h2>5. Google Authentication</h2>
+    <p>We use Google OAuth solely for secure authentication. This means:</p>
     <ul>
-        <li>Create study review events in your calendar</li>
+        <li>We only access your email and name to create your account</li>
+        <li>We do NOT access your Google Calendar, Gmail, Drive, or any other Google services</li>
+        <li>You can revoke access at any time via your Google Account settings</li>
     </ul>
 
-    <p>We do NOT:</p>
-    <ul>
-        <li>Read your existing calendar events</li>
-        <li>Edit or delete your existing events</li>
-        <li>Access calendars you haven't selected</li>
-        <li>Share your calendar data with anyone</li>
-        <li>Use your calendar data for any purpose other than creating review schedules</li>
-    </ul>
-
-    <p><strong>Scope we request:</strong> calendar.events (create and manage events only)</p>
+    <p><strong>Scopes we request:</strong> email, profile (basic authentication only)</p>
     
     <h2>6. Google API Services</h2>
     <p>This app's use of information received from Google APIs adheres to the 
@@ -134,7 +127,7 @@
     <p>You can:</p>
     <ul>
         <li>Revoke access at any time via your <a href="https://myaccount.google.com/permissions" target="_blank">Google Account permissions</a></li>
-        <li>Delete calendar events we created at any time</li>
+        
         <li>Request deletion of your account data by contacting us</li>
     </ul>
     

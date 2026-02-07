@@ -12,12 +12,8 @@ class Schedule(Base):
     
     # Schedule details
     topic = Column(String, nullable=False)
-    start_date = Column(DateTime, nullable=False)  # This is the NEXT REVIEW DATE
+    start_date = Column(DateTime, nullable=False)
     intervals = Column(JSON, nullable=False)
-    
-    # Google Calendar integration
-    calendar_event_ids = Column(JSON)
-    calendar_id = Column(String, default="primary")
     
     # Metadata
     created_at = Column(DateTime, default=datetime.utcnow)

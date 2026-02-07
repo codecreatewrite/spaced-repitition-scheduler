@@ -1,13 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException, Request
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, Field
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from typing import List, Optional
+
 from app.db.session import get_db
-from app.db.crud import TokenCRUD, ScheduleCRUD
+from app.db.crud import ScheduleCRUD
 from app.core.dependencies import get_current_user
-from app.services.calendar_service import CalendarService
 from app.models.user import User
 from app.core.config import settings
 
@@ -18,7 +17,6 @@ class CreateScheduleRequest(BaseModel):
     topic: str = Field(..., min_length=1, max_length=200, description="Topic or subject to review")
     start_date: Optional[str] = Field(None, description="Start date in YYYY-MM-DD format")
     intervals: Optional[str] = Field(None, description="Comma-separated intervals (e.g., '1,3,7,21')")
-    calendar_id: str = Field("primary", description="Google Calendar ID")
     topic_id: Optional[str] = None
 
 class ScheduleResponse(BaseModel):
@@ -27,8 +25,21 @@ class ScheduleResponse(BaseModel):
     start_date: str
     intervals: List[int]
     review_dates: List[str]
-    events_created: int
-    calendar_link: Optional[str] = None
+
+
+def generate_review_dates(start_date: date, intervals: List[int]) -> List[date]:
+    """
+    Generate review dates based on StudyCore intervals.
+    
+    Args:
+        start_date: The date to start from
+        intervals: List of days to add (e.g., [1, 3, 7, 21])
+    
+    Returns:
+        List of review dates
+    """
+    return [start_date + timedelta(days=interval) for interval in intervals]
+
 
 @router.post("/create", response_model=dict)
 async def create_schedule(
@@ -37,13 +48,8 @@ async def create_schedule(
     db: Session = Depends(get_db)
 ):
     """
-    Create a new spaced repetition schedule and add events to Google Calendar.
+    Create a new spaced repetition schedule (internal tracking only).
     """
-    
-    # Get user's OAuth token
-    token_record = TokenCRUD.get_by_user(db, current_user.id)
-    if not token_record:
-        raise HTTPException(status_code=401, detail="Google Calendar access not authorized")
     
     # Parse start date (default to today if not provided)
     if request.start_date:
@@ -65,36 +71,17 @@ async def create_schedule(
     else:
         intervals = settings.intervals_list
     
-    # Initialize Calendar Service with user's credentials
-    calendar_service = CalendarService(token_record.token_data)
+    # Generate review dates
+    review_dates = generate_review_dates(start_date, intervals)
     
     try:
-        # Create the full schedule in Google Calendar
-        result = calendar_service.create_full_schedule(
-            topic=request.topic,
-            start_date=start_date,
-            intervals=intervals,
-            calendar_id=request.calendar_id
-        )
-        
-        if result['total_failed'] > 0:
-            # Some events failed
-            raise HTTPException(
-                status_code=500,
-                detail=f"Created {result['total_created']} events, but {result['total_failed']} failed"
-            )
-        
-        # Store schedule in database
-        event_ids = [e['event_id'] for e in result['events'] if 'event_id' in e]
+        # Store schedule in database (internal tracking only)
         schedule_data = {
             'user_id': current_user.id,
             'topic': request.topic,
-            'topic_id': None,  # ✅ Set to None for now (can link to Topic later)
+            'topic_id': request.topic_id,
             'start_date': start_date,
             'intervals': intervals,
-            'calendar_id': request.calendar_id,
-            'calendar_event_ids': event_ids,
-            'topic_id': request.topic_id
         }
         
         schedule = ScheduleCRUD.create(db, schedule_data)
@@ -102,17 +89,17 @@ async def create_schedule(
         return {
             'success': True,
             'schedule_id': schedule.id,
-            'topic': result['topic'],
-            'start_date': result['start_date'],
-            'intervals': result['intervals'],
-            'review_dates': result['review_dates'],
-            'events': result['events'],
-            'total_created': result['total_created'],
-            'message': f"Successfully created {result['total_created']} review events for '{request.topic}'"
+            'topic': request.topic,
+            'start_date': start_date.isoformat(),
+            'intervals': intervals,
+            'review_dates': [d.isoformat() for d in review_dates],
+            'total_created': len(review_dates),
+            'message': f"Successfully created schedule for '{request.topic}' with {len(review_dates)} review dates"
         }
-        
+    
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to create schedule: {str(e)}")
+
 
 @router.get("/my-schedules")
 async def get_my_schedules(
@@ -131,26 +118,8 @@ async def get_my_schedules(
                 'start_date': s.start_date.isoformat(),
                 'intervals': s.intervals,
                 'created_at': s.created_at.isoformat(),
-                'events_count': len(s.calendar_event_ids) if s.calendar_event_ids else 0
+                'review_count': len(s.intervals) if s.intervals else 0
             }
             for s in schedules
         ]
     }
-
-@router.get("/calendars")
-async def get_calendars(
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
-    """Get list of user's Google Calendars"""
-    token_record = TokenCRUD.get_by_user(db, current_user.id)
-    if not token_record:
-        raise HTTPException(status_code=401, detail="Google Calendar access not authorized")
-    
-    calendar_service = CalendarService(token_record.token_data)
-    
-    try:
-        calendars = calendar_service.list_calendars()
-        return {'calendars': calendars}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to fetch calendars: {str(e)}")
