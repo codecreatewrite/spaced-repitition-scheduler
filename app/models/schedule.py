@@ -8,13 +8,11 @@ class Schedule(Base):
     
     id = Column(String, primary_key=True)
     user_id = Column(String, ForeignKey("users.id"), nullable=False)
-    
-    # Topic linkage
     topic_id = Column(String, ForeignKey("topics.id"), nullable=True)
     
     # Schedule details
     topic = Column(String, nullable=False)
-    start_date = Column(DateTime, nullable=False)
+    start_date = Column(DateTime, nullable=False)  # This is the NEXT REVIEW DATE
     intervals = Column(JSON, nullable=False)
     
     # Google Calendar integration
@@ -23,7 +21,6 @@ class Schedule(Base):
     
     # Metadata
     created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)  # ADD THIS LINE
     completed = Column(Integer, default=0)
     
     # Relationships
