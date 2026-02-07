@@ -6,7 +6,9 @@ from app.db.session import get_db
 from app.db.topic_crud import TopicCRUD, ExplainSessionCRUD
 from app.core.dependencies import get_current_user
 from app.models.user import User
-from datetime import datetime
+from app.models.schedule import Schedule
+from datetime import datetime, timedelta, date
+import uuid
 
 router = APIRouter(prefix="/api/topics", tags=["topics"])
 
@@ -33,6 +35,73 @@ class CreateExplainSessionRequest(BaseModel):
     forgot: Optional[str] = None
     unclear: Optional[str] = None
     confidence: Optional[int] = None
+
+# NEW: Helper function to calculate next review date
+def calculate_next_review_date(confidence: int) -> date:
+    """
+    Calculate next review date based on confidence level.
+    
+    Confidence mapping:
+    1 (Lost): Review tomorrow (1 day)
+    2 (Struggling): Review in 2 days
+    3 (Okay): Review in 3 days
+    4 (Good): Review in 7 days
+    5 (Mastered): Review in 14 days
+    """
+    confidence_to_days = {
+        1: 1,
+        2: 2,
+        3: 3,
+        4: 7,
+        5: 14
+    }
+    
+    days = confidence_to_days.get(confidence, 3)  # Default to 3 days if invalid
+    return date.today() + timedelta(days=days)
+
+# NEW: Helper function to create or update schedule
+def create_or_update_schedule(
+    db: Session, 
+    user_id: str, 
+    topic_id: str, 
+    topic_title: str, 
+    next_review_date: date
+) -> Schedule:
+    """
+    Create a new schedule or update existing one for this topic.
+    One topic = one active schedule (no duplicates).
+    """
+    # Check if schedule already exists for this topic
+    existing_schedule = db.query(Schedule).filter(
+        Schedule.topic_id == topic_id,
+        Schedule.user_id == user_id
+    ).first()
+    
+    if existing_schedule:
+        # Update existing schedule
+        existing_schedule.start_date = datetime.combine(next_review_date, datetime.min.time())
+        existing_schedule.updated_at = datetime.utcnow()
+        db.commit()
+        db.refresh(existing_schedule)
+        return existing_schedule
+    else:
+        # Create new schedule
+        schedule = Schedule(
+            id=str(uuid.uuid4()),
+            user_id=user_id,
+            topic_id=topic_id,
+            topic=topic_title,  # For backward compatibility
+            start_date=datetime.combine(next_review_date, datetime.min.time()),
+            intervals=[1, 3, 7, 14],  # Default intervals
+            calendar_event_ids=[],
+            calendar_id="primary",
+            completed=0,
+            created_at=datetime.utcnow()
+        )
+        db.add(schedule)
+        db.commit()
+        db.refresh(schedule)
+        return schedule
 
 @router.post("/create")
 async def create_topic(
@@ -108,6 +177,16 @@ async def get_topic(
     # Get recent sessions
     sessions = ExplainSessionCRUD.get_topic_sessions(db, topic_id)
     
+    # Get next review date (if scheduled)
+    schedule = db.query(Schedule).filter(
+        Schedule.topic_id == topic_id,
+        Schedule.user_id == current_user.id
+    ).first()
+    
+    next_review = None
+    if schedule:
+        next_review = schedule.start_date.date().isoformat()
+    
     return {
         "id": topic.id,
         "title": topic.title,
@@ -116,6 +195,7 @@ async def get_topic(
         "total_explains": topic.total_explains,
         "avg_confidence": topic.avg_confidence,
         "last_explained": topic.last_explained.isoformat() if topic.last_explained else None,
+        "next_review": next_review,
         "created_at": topic.created_at.isoformat(),
         "recent_sessions": [
             {
@@ -134,7 +214,7 @@ async def save_explain_session(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Save an explain mode session"""
+    """Save an explain mode session and auto-schedule next review"""
     
     # Verify topic belongs to user
     topic = TopicCRUD.get_by_id(db, request.topic_id)
@@ -157,14 +237,37 @@ async def save_explain_session(
     
     session = ExplainSessionCRUD.create(db, session_data)
 
-    # ADD THIS: Update analytics
-    from app.services.analytics_service import AnalyticsService
-    AnalyticsService.update_explain_completed(db, current_user.id)
+    # Update analytics
+    try:
+        from app.services.analytics_service import AnalyticsService
+        AnalyticsService.update_explain_completed(db, current_user.id)
+    except:
+        pass  # Analytics is optional
+    
+    # NEW: Auto-schedule next review based on confidence
+    next_review_date = None
+    days_until_review = None
+    
+    if request.confidence:
+        next_review_date = calculate_next_review_date(request.confidence)
+        days_until_review = (next_review_date - date.today()).days
+        
+        # Create or update schedule
+        create_or_update_schedule(
+            db=db,
+            user_id=current_user.id,
+            topic_id=request.topic_id,
+            topic_title=topic.title,
+            next_review_date=next_review_date
+        )
     
     return {
         "success": True,
         "session_id": session.id,
-        "message": "Session saved successfully"
+        "message": "Session saved successfully",
+        "next_review_date": next_review_date.isoformat() if next_review_date else None,
+        "days_until_review": days_until_review,
+        "confidence": request.confidence
     }
 
 @router.delete("/{topic_id}")

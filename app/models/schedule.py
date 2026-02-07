@@ -9,11 +9,11 @@ class Schedule(Base):
     id = Column(String, primary_key=True)
     user_id = Column(String, ForeignKey("users.id"), nullable=False)
     
-    # Topic linkage (FIXED - added ForeignKey)
+    # Topic linkage
     topic_id = Column(String, ForeignKey("topics.id"), nullable=True)
     
     # Schedule details
-    topic = Column(String, nullable=False)  # Keep this for backward compatibility
+    topic = Column(String, nullable=False)
     start_date = Column(DateTime, nullable=False)
     intervals = Column(JSON, nullable=False)
     
@@ -23,8 +23,9 @@ class Schedule(Base):
     
     # Metadata
     created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)  # ADD THIS LINE
     completed = Column(Integer, default=0)
     
-    # Relationships (FIXED - now has proper FK backing)
+    # Relationships
     user = relationship("User", back_populates="schedules")
-    topic_relation = relationship("Topic", back_populates="schedules")  # Renamed to avoid conflict
+    topic_relation = relationship("Topic", back_populates="schedules")
