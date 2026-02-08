@@ -63,7 +63,7 @@ def create_or_update_schedule(
         Schedule.topic_id == topic_id,
         Schedule.user_id == user_id
     ).first()
-    
+
     if existing:
         # UPDATE existing schedule (most recent explain wins)
         existing.start_date = datetime.combine(next_review_date, datetime.min.time())
@@ -98,7 +98,7 @@ async def create_topic(
     """Create a new topic"""
     if not request.title.strip():
         raise HTTPException(status_code=400, detail="Topic title cannot be empty")
-    
+
     topic = TopicCRUD.create(
         db=db,
         user_id=current_user.id,
@@ -106,7 +106,7 @@ async def create_topic(
         subject=request.subject,
         description=request.description
     )
-    
+
     return {
         "success": True,
         "topic": {
@@ -124,7 +124,7 @@ async def list_topics(
 ):
     """Get all topics for current user"""
     topics = TopicCRUD.get_user_topics(db, current_user.id)
-    
+
     return {
         "total": len(topics),
         "topics": [
@@ -150,26 +150,26 @@ async def get_topic(
 ):
     """Get a specific topic"""
     topic = TopicCRUD.get_by_id(db, topic_id)
-    
+
     if not topic:
         raise HTTPException(status_code=404, detail="Topic not found")
-    
+
     if topic.user_id != current_user.id:
         raise HTTPException(status_code=403, detail="Not authorized to access this topic")
-    
+
     # Get recent sessions
     sessions = ExplainSessionCRUD.get_topic_sessions(db, topic_id)
-    
+
     # Get next review date (if scheduled)
     schedule = db.query(Schedule).filter(
         Schedule.topic_id == topic_id,
         Schedule.user_id == current_user.id
     ).first()
-    
+
     next_review = None
     if schedule:
         next_review = schedule.start_date.date().isoformat()
-    
+
     return {
         "id": topic.id,
         "title": topic.title,
@@ -198,18 +198,18 @@ async def save_explain_session(
     db: Session = Depends(get_db)
 ):
     """Save explain session and AUTO-SCHEDULE next review"""
-    
+
     print(f"\n🎯 Explain endpoint called for topic {request.topic_id}")
     print(f"   Confidence: {request.confidence}")
-    
+
     # Verify topic belongs to user
     topic = TopicCRUD.get_by_id(db, request.topic_id)
     if not topic:
         raise HTTPException(status_code=404, detail="Topic not found")
-    
+
     if topic.user_id != current_user.id:
         raise HTTPException(status_code=403, detail="Not authorized")
-    
+
     # Create session
     session_data = {
         "topic_id": request.topic_id,
@@ -220,26 +220,26 @@ async def save_explain_session(
         "unclear": request.unclear,
         "confidence": request.confidence
     }
-    
+
     session = ExplainSessionCRUD.create(db, session_data)
     print(f"✅ Explain session saved: {session.id}")
-    
+
     # Update analytics (optional)
     try:
         from app.services.analytics_service import AnalyticsService
         AnalyticsService.update_explain_completed(db, current_user.id)
     except Exception as e:
         print(f"⚠️  Analytics update failed: {e}")
-    
+
     # AUTO-SCHEDULE next review based on confidence
     next_review_date = None
     days_until_review = None
-    
+
     if request.confidence:
         print(f"📅 Auto-scheduling review...")
         next_review_date = calculate_next_review_date(request.confidence)
         days_until_review = (next_review_date - date.today()).days
-        
+
         # Create or update schedule (ONE schedule per topic)
         schedule = create_or_update_schedule(
             db=db,
@@ -248,12 +248,12 @@ async def save_explain_session(
             topic_title=topic.title,
             next_review_date=next_review_date
         )
-        
+
         print(f"✅ Schedule saved: {schedule.id}")
         print(f"   Next review: {next_review_date} ({days_until_review} days)")
     else:
         print(f"⚠️  No confidence provided, skipping auto-scheduling")
-    
+
     return {
         "success": True,
         "session_id": session.id,
@@ -261,6 +261,41 @@ async def save_explain_session(
         "next_review_date": next_review_date.isoformat() if next_review_date else None,
         "days_until_review": days_until_review,
         "confidence": request.confidence
+    }
+
+@router.get("/{topic_id}/sessions")
+async def get_topic_sessions(
+    topic_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Get all explain sessions for a topic with reflections"""
+    
+    # Verify topic ownership
+    topic = TopicCRUD.get_by_id(db, topic_id)
+    if not topic or topic.user_id != current_user.id:
+        raise HTTPException(status_code=404, detail="Topic not found")
+    
+    # Get all sessions
+    sessions = ExplainSessionCRUD.get_topic_sessions(db, topic_id)
+    
+    return {
+        "topic_id": topic_id,
+        "topic_title": topic.title,
+        "total_sessions": len(sessions),
+        "sessions": [
+            {
+                "id": s.id,
+                "date": s.created_at.isoformat(),
+                "duration_seconds": s.duration_seconds,
+                "confidence": s.confidence,
+                "struggles": s.struggles,
+                "forgot": s.forgot,
+                "unclear": s.unclear,
+                "days_ago": (datetime.utcnow() - s.created_at).days
+            }
+            for s in sessions
+        ]
     }
 
 @router.delete("/{topic_id}")
@@ -271,13 +306,13 @@ async def delete_topic(
 ):
     """Delete a topic"""
     topic = TopicCRUD.get_by_id(db, topic_id)
-    
+
     if not topic:
         raise HTTPException(status_code=404, detail="Topic not found")
-    
+
     if topic.user_id != current_user.id:
         raise HTTPException(status_code=403, detail="Not authorized")
-    
+
     TopicCRUD.delete(db, topic_id)
-    
+
     return {"success": True, "message": "Topic deleted"}

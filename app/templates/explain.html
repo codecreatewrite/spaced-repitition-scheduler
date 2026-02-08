@@ -171,6 +171,12 @@
             font-weight: 900;
             margin: 1rem 0;
         }
+
+        @media (max-width: 768px) {
+            .timer-display {
+                font-size: 5rem;
+            }
+        }
     </style>
     {% include "base_analytics.html" %}
 </head>
@@ -182,13 +188,13 @@
                 <div class="topic-title" id="topicTitle">Loading...</div>
                 <div class="topic-subject" id="topicSubject"></div>
             </div>
-            
+
             <div class="progress-bar">
                 <div class="progress-fill" id="progressFill" style="width: 0%"></div>
             </div>
-            
+
             <div class="timer-display" id="timerDisplay">5:00</div>
-            
+
             <div class="phase-instruction">
                 <strong>🎯 Your Mission</strong>
                 Explain this topic out loud like you're teaching someone who knows nothing about it.
@@ -197,34 +203,34 @@
                 <br><br>
                 The struggle is the point. It shows you what you actually know vs what you only THINK you know.
             </div>
-            
+
             <div class="controls">
                 <button class="btn" id="startBtn" onclick="startTimer()">Start Explaining</button>
                 <button class="btn btn-secondary" onclick="skipToReflection()">Skip to Reflection</button>
             </div>
         </div>
-        
+
         <!-- Reflection Phase -->
         <div id="reflectionPhase" class="reflection-form">
             <h2 style="color: #667eea; margin-bottom: 1.5rem;">📝 Reflection Time</h2>
             <p style="margin-bottom: 2rem; color: #666;">This is where real learning happens. Be honest about what you struggled with.</p>
-            
+
             <form id="reflectionForm">
                 <div class="form-group">
                     <label>What did you struggle to explain?</label>
                     <textarea id="struggles" placeholder="e.g., I couldn't remember the specific mechanisms..."></textarea>
                 </div>
-                
+
                 <div class="form-group">
                     <label>What did you completely forget?</label>
                     <textarea id="forgot" placeholder="e.g., I forgot the entire section on..."></textarea>
                 </div>
-                
+
                 <div class="form-group">
                     <label>What still feels unclear?</label>
                     <textarea id="unclear" placeholder="e.g., I understand the concept but not how it applies..."></textarea>
                 </div>
-                
+
                 <div class="form-group">
                     <label>How confident do you feel? (1 = Lost, 5 = Could teach this)</label>
                     <div class="confidence-scale">
@@ -235,30 +241,38 @@
                         <button type="button" class="confidence-btn" onclick="selectConfidence(5)">5<br>🎯</button>
                     </div>
                 </div>
-                
+
                 <button type="submit" class="btn" style="width: 100%; background: #667eea; color: white;">Save & Continue</button>
             </form>
+
+            <!-- Past Reflections Section -->
+            <div id="pastReflections" style="margin-top: 3rem; padding: 2rem; background: #f9fafb; border-radius: 16px;">
+                <h3 style="color: #1a1a1a; margin-bottom: 1rem;">📝 Your Past Reflections</h3>
+                <div id="reflectionsList">
+                    <p style="color: #666;">Loading past sessions...</p>
+                </div>
+            </div>
         </div>
-        
+
         <!-- Success Phase (AUTO-SCHEDULED) -->
         <div id="successPhase" style="display: none;">
             <!-- This will be populated by JavaScript after saving -->
         </div>
     </div>
-    
+
     <script>
         const topicId = window.location.pathname.split('/').pop();
         let timerInterval;
         let timeRemaining = 300; // 5 minutes in seconds
         let selectedConfidence = null;
         let startTime;
-        
+
         // Load topic details
         async function loadTopic() {
             try {
                 const response = await fetch(`/api/topics/${topicId}`);
                 const data = await response.json();
-                
+
                 document.getElementById('topicTitle').textContent = data.title;
                 if (data.subject) {
                     document.getElementById('topicSubject').textContent = data.subject;
@@ -268,38 +282,123 @@
                 document.getElementById('topicTitle').textContent = 'Topic Not Found';
             }
         }
-        
+
+        // Load past reflections
+        async function loadPastReflections() {
+            try {
+                const response = await fetch(`/api/topics/${topicId}/sessions`);
+                const data = await response.json();
+                
+                const container = document.getElementById('reflectionsList');
+                
+                if (data.sessions.length === 0) {
+                    container.innerHTML = '<p style="color: #666;">No past sessions yet. Complete your first explanation above!</p>';
+                    return;
+                }
+                
+                let html = '<div style="display: grid; gap: 1rem;">';
+                
+                data.sessions.forEach((session, index) => {
+                    const date = new Date(session.date);
+                    const formattedDate = date.toLocaleDateString('en-NG', { 
+                        month: 'short', 
+                        day: 'numeric', 
+                        year: 'numeric' 
+                    });
+                    
+                    html += `
+                        <div style="background: white; padding: 1.5rem; border-radius: 12px; border-left: 4px solid ${getConfidenceColor(session.confidence)};">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                                <div>
+                                    <strong style="color: #1a1a1a;">Session ${data.sessions.length - index}</strong>
+                                    <span style="color: #666; margin-left: 1rem;">${formattedDate} (${session.days_ago} days ago)</span>
+                                </div>
+                                <div style="background: ${getConfidenceColor(session.confidence)}; color: white; padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.9rem; font-weight: 600;">
+                                    Confidence: ${session.confidence}/5
+                                </div>
+                            </div>
+                            
+                            ${session.struggles ? `
+                                <div style="margin-bottom: 0.5rem;">
+                                    <strong style="color: #666;">What you struggled with:</strong>
+                                    <p style="color: #1a1a1a; margin-top: 0.25rem;">${session.struggles}</p>
+                                </div>
+                            ` : ''}
+                            
+                            ${session.forgot ? `
+                                <div style="margin-bottom: 0.5rem;">
+                                    <strong style="color: #666;">What you forgot:</strong>
+                                    <p style="color: #1a1a1a; margin-top: 0.25rem;">${session.forgot}</p>
+                                </div>
+                            ` : ''}
+                            
+                            ${session.unclear ? `
+                                <div style="margin-bottom: 0.5rem;">
+                                    <strong style="color: #666;">What was unclear:</strong>
+                                    <p style="color: #1a1a1a; margin-top: 0.25rem;">${session.unclear}</p>
+                                </div>
+                            ` : ''}
+                            
+                            <div style="color: #666; font-size: 0.9rem; margin-top: 0.5rem;">
+                                Duration: ${Math.floor(session.duration_seconds / 60)}min ${session.duration_seconds % 60}s
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                container.innerHTML = html;
+                
+            } catch (error) {
+                console.error('Error loading reflections:', error);
+                document.getElementById('reflectionsList').innerHTML = 
+                    '<p style="color: #c33;">Error loading past sessions</p>';
+            }
+        }
+
+        function getConfidenceColor(confidence) {
+            const colors = {
+                1: '#ef4444',  // Red
+                2: '#f97316',  // Orange
+                3: '#eab308',  // Yellow
+                4: '#22c55e',  // Green
+                5: '#10b981'   // Dark Green
+            };
+            return colors[confidence] || '#667eea';
+        }
+
         function startTimer() {
             startTime = Date.now();
             document.getElementById('startBtn').disabled = true;
             document.getElementById('startBtn').textContent = 'Explaining...';
-            
+
             timerInterval = setInterval(() => {
                 timeRemaining--;
                 updateDisplay();
-                
+
                 if (timeRemaining <= 0) {
                     endTimer();
                 }
             }, 1000);
         }
-        
+
         function updateDisplay() {
             const minutes = Math.floor(timeRemaining / 60);
             const seconds = timeRemaining % 60;
-            document.getElementById('timerDisplay').textContent = 
+            document.getElementById('timerDisplay').textContent =
                 `${minutes}:${seconds.toString().padStart(2, '0')}`;
-            
+
             const progress = ((300 - timeRemaining) / 300) * 100;
             document.getElementById('progressFill').style.width = `${progress}%`;
         }
-        
+
         function endTimer() {
             clearInterval(timerInterval);
             document.getElementById('timerPhase').style.display = 'none';
             document.getElementById('reflectionPhase').classList.add('active');
+            loadPastReflections();
         }
-        
+
         function skipToReflection() {
             if (confirm('Skip the timer? You can still fill out the reflection.')) {
                 startTime = Date.now();
@@ -307,7 +406,7 @@
                 endTimer();
             }
         }
-        
+
         function selectConfidence(level) {
             selectedConfidence = level;
             document.querySelectorAll('.confidence-btn').forEach(btn => {
@@ -315,14 +414,14 @@
             });
             event.target.classList.add('selected');
         }
-        
+
         // Helper function to format date nicely
         function formatDate(dateString) {
             const date = new Date(dateString);
             const options = { weekday: 'long', month: 'long', day: 'numeric' };
             return date.toLocaleDateString('en-US', options);
         }
-        
+
         // Helper function to get confidence emoji
         function getConfidenceEmoji(confidence) {
             const emojis = {
@@ -334,7 +433,7 @@
             };
             return emojis[confidence] || '😐';
         }
-        
+
         // Helper function to get confidence message
         function getConfidenceMessage(confidence) {
             const messages = {
@@ -346,17 +445,17 @@
             };
             return messages[confidence] || "Keep up the good work!";
         }
-        
+
         document.getElementById('reflectionForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            
+
             if (selectedConfidence === null) {
                 alert('Please select a confidence level');
                 return;
             }
-            
+
             const durationSeconds = Math.floor((Date.now() - startTime) / 1000);
-            
+
             const sessionData = {
                 topic_id: topicId,
                 duration_seconds: durationSeconds,
@@ -365,20 +464,20 @@
                 unclear: document.getElementById('unclear').value,
                 confidence: selectedConfidence
             };
-            
+
             try {
                 const response = await fetch('/api/topics/explain', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(sessionData)
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (data.success) {
                     // Hide reflection form
                     document.getElementById('reflectionPhase').style.display = 'none';
-                    
+
                     // Show success with AUTO-SCHEDULED review info
                     const successHTML = `
                         <div class="success-box">
@@ -387,7 +486,7 @@
                             <p style="font-size: 1.1rem; opacity: 0.95; margin-bottom: 1.5rem;">
                                 Great work identifying your struggles. That's where real learning happens.
                             </p>
-                            
+
                             <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 12px;">
                                 <div style="font-size: 1.2rem; opacity: 0.9; margin-bottom: 0.5rem;">
                                     Your Confidence
@@ -398,7 +497,7 @@
                                 <p style="opacity: 0.95; margin-bottom: 1.5rem;">
                                     ${getConfidenceMessage(selectedConfidence)}
                                 </p>
-                                
+
                                 ${data.next_review_date ? `
                                 <div style="border-top: 2px solid rgba(255,255,255,0.2); padding-top: 1.5rem; margin-top: 1.5rem;">
                                     <div style="font-size: 1.2rem; opacity: 0.9; margin-bottom: 1rem;">
@@ -417,7 +516,7 @@
                                 ` : ''}
                             </div>
                         </div>
-                        
+
                         <div class="controls">
                             <button class="btn" onclick="window.location.href='/topics'">
                                 ← Back to Topics
@@ -427,7 +526,7 @@
                             </button>
                         </div>
                     `;
-                    
+
                     document.getElementById('successPhase').innerHTML = successHTML;
                     document.getElementById('successPhase').style.display = 'block';
                 } else {
@@ -438,7 +537,7 @@
                 alert('Error saving session: ' + error.message);
             }
         });
-        
+
         // Load topic on page load
         loadTopic();
     </script>
