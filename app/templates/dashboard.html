@@ -72,7 +72,7 @@
             color: #666;
             font-size: 1.1rem;
         }
-        
+
         /* Due Today Section */
         .due-today {
             background: linear-gradient(135deg, #667eea, #764ba2);
@@ -123,7 +123,7 @@
         .btn-review:hover {
             transform: scale(1.05);
         }
-        
+
         /* Empty State */
         .empty-state {
             text-align: center;
@@ -135,7 +135,7 @@
             font-size: 4rem;
             margin-bottom: 1rem;
         }
-        
+
         /* Quick Actions */
         .quick-actions {
             display: grid;
@@ -167,7 +167,7 @@
             color: #666;
             font-size: 0.95rem;
         }
-        
+
         /* Stats Overview */
         .stats-overview {
             background: white;
@@ -197,7 +197,7 @@
             color: #666;
             font-size: 0.9rem;
         }
-        
+
         /* Mobile Responsive */
         @media (max-width: 768px) {
             nav {
@@ -237,13 +237,13 @@
             <a href="/auth/logout" class="logout">Logout</a>
         </div>
     </nav>
-    
+
     <div class="container">
         <div class="greeting">
             <h1>👋 Welcome back, {{ user.name.split()[0] }}!</h1>
             <p id="greetingText">Let's see what you need to review today...</p>
         </div>
-        
+
         <!-- Due Today Section -->
         <div class="due-today">
             <h2>🔔 Review Today</h2>
@@ -254,7 +254,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Quick Actions -->
         <div class="quick-actions">
             <div class="action-card" onclick="window.location.href='/topics'">
@@ -262,20 +262,20 @@
                 <h3>My Topics</h3>
                 <p>View all topics you're learning</p>
             </div>
-            
+
             <div class="action-card" onclick="window.location.href='/topics'">
                 <div class="action-icon">➕</div>
                 <h3>Add Topic</h3>
                 <p>Start learning something new</p>
             </div>
-            
+
             <div class="action-card" onclick="window.location.href='/analytics'">
                 <div class="action-icon">📊</div>
                 <h3>Progress</h3>
                 <p>See your learning stats</p>
             </div>
         </div>
-        
+
         <!-- Quick Stats -->
         <div class="stats-overview">
             <h2>📈 Your Progress</h2>
@@ -299,25 +299,25 @@
             </div>
         </div>
     </div>
-    
+
     <script>
         // Get current time for greeting
         const hour = new Date().getHours();
         let greeting = "Good evening";
         if (hour < 12) greeting = "Good morning";
         else if (hour < 18) greeting = "Good afternoon";
-        
-        document.getElementById('greetingText').textContent = 
+
+        document.getElementById('greetingText').textContent =
             greeting + "! Here's what needs your attention today.";
-        
+
         // Load due reviews
         async function loadDueReviews() {
             try {
                 const response = await fetch('/api/due-today');
                 const data = await response.json();
-                
+
                 const container = document.getElementById('dueReviews');
-                
+
                 if (data.total_due === 0) {
                     container.innerHTML = `
                         <div class="empty-state">
@@ -333,31 +333,40 @@
                     `;
                     return;
                 }
-                
+
                 let html = '';
-                
-                // Show scheduled reviews
+
+                // ✅ FIXED: Show scheduled reviews with correct field names
                 data.due_schedules.forEach(review => {
+                    // Determine status message
+                    let statusMessage = '';
+                    if (review.status === 'overdue') {
+                        const days = review.days_overdue;
+                        statusMessage = `${days} day${days !== 1 ? 's' : ''} overdue`;
+                    } else {
+                        statusMessage = 'Due today';
+                    }
+                    
                     html += `
                         <div class="review-card">
                             <div class="review-info">
-                                <h3>${review.schedule_topic}</h3>
+                                <h3>${review.topic || 'Untitled Topic'}</h3>
                                 <div class="review-meta">
-                                    Scheduled review • Day ${review.interval}
+                                    Scheduled review · ${statusMessage}
                                 </div>
                             </div>
-                            ${review.can_explain ? 
+                            ${review.can_explain ?
                                 `<a href="/explain/${review.topic_id}" class="btn-review">
                                     🎯 Review Now
                                 </a>` :
-                                `<button onclick="createTopic('${review.schedule_topic}')" class="btn-review">
+                                `<button onclick="createTopic('${review.topic}')" class="btn-review">
                                     + Create Topic First
                                 </button>`
                             }
                         </div>
                     `;
                 });
-                
+
                 // Show topics needing review
                 data.topics_needing_review.forEach(topic => {
                     html += `
@@ -365,8 +374,8 @@
                             <div class="review-info">
                                 <h3>${topic.title}</h3>
                                 <div class="review-meta">
-                                    Last reviewed ${topic.days_since} days ago • 
-                                    Low confidence (${topic.confidence}/5)
+                                    Last reviewed ${topic.days_since} day${topic.days_since !== 1 ? 's' : ''} ago ·
+                                    Confidence: ${topic.confidence}/5
                                 </div>
                             </div>
                             <a href="/explain/${topic.topic_id}" class="btn-review">
@@ -375,9 +384,9 @@
                         </div>
                     `;
                 });
-                
+
                 container.innerHTML = html;
-                
+
             } catch (error) {
                 console.error('Error loading reviews:', error);
                 document.getElementById('dueReviews').innerHTML = `
@@ -389,13 +398,13 @@
                 `;
             }
         }
-        
+
         // Load quick stats
         async function loadQuickStats() {
             try {
                 const response = await fetch('/api/analytics/stats');
                 const data = await response.json();
-                
+
                 document.getElementById('quickStats').innerHTML = `
                     <div class="stat-item">
                         <div class="stat-value">${data.total_topics || 0}</div>
@@ -418,12 +427,12 @@
                 console.error('Error loading stats:', error);
             }
         }
-        
+
         function createTopic(topicName) {
             localStorage.setItem('prefill_topic', topicName);
             window.location.href = '/topics';
         }
-        
+
         // Load everything
         loadDueReviews();
         loadQuickStats();
