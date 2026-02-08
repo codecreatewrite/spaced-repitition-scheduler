@@ -23,7 +23,8 @@ async def get_due_today(
     # ✅ FIXED: Get schedules due TODAY OR EARLIER (includes overdue)
     due_schedules = db.query(Schedule).filter(
         Schedule.user_id == current_user.id,
-        Schedule.start_date <= datetime.combine(today, datetime.max.time())  # ✅ Changed to <=
+        Schedule.start_date <= datetime.combine(today, datetime.max.time()),
+        Schedule.topic_id != None
     ).all()
     
     # Get all user's topics for context
