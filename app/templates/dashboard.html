@@ -415,7 +415,8 @@
         // Load due reviews
         async function loadDueReviews() {
             try {
-                const response = await fetch('/api/due-today');
+                const timestamp = new Date().getTime();
+                const response = await fetch(`/api/due-today?t=${timestamp}`);
                 const data = await response.json();
 
                 const container = document.getElementById('dueReviews');

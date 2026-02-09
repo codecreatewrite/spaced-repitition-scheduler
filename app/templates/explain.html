@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <!-- Include mobile styles -->
     {% include "_mobile_styles.html" %}
 
@@ -245,9 +244,9 @@
                 <button type="submit" class="btn" style="width: 100%; background: #667eea; color: white;">Save & Continue</button>
             </form>
 
-            <!-- Past Reflections Section -->
-            <div id="pastReflections" style="margin-top: 3rem; padding: 2rem; background: #f9fafb; border-radius: 16px;">
-                <h3 style="color: #1a1a1a; margin-bottom: 1rem;">📝 Your Past Reflections</h3>
+            <!-- Past Reflections Section - Updated Version -->
+            <div id="pastReflections" style="margin-top: 3rem; padding: 2rem; background: #f9fafb; border-radius: 16px; max-width: 900px; margin-left: auto; margin-right: auto;">
+                <h3 style="color: #1a1a1a; margin-bottom: 1.5rem; font-size: 1.5rem;">📝 Your Past Reflections</h3>
                 <div id="reflectionsList">
                     <p style="color: #666;">Loading past sessions...</p>
                 </div>
@@ -283,79 +282,82 @@
             }
         }
 
-        // Load past reflections
+        // Updated function to load past reflections
         async function loadPastReflections() {
             try {
                 const response = await fetch(`/api/topics/${topicId}/sessions`);
                 const data = await response.json();
-                
+
                 const container = document.getElementById('reflectionsList');
-                
+
                 if (data.sessions.length === 0) {
-                    container.innerHTML = '<p style="color: #666;">No past sessions yet. Complete your first explanation above!</p>';
+                    container.innerHTML = '<p style="color: #666; text-align: center;">No past sessions yet. Complete your first explanation above!</p>';
                     return;
                 }
-                
-                let html = '<div style="display: grid; gap: 1rem;">';
-                
+
+                let html = '<div style="display: grid; gap: 1.5rem;">';
+
                 data.sessions.forEach((session, index) => {
                     const date = new Date(session.date);
-                    const formattedDate = date.toLocaleDateString('en-NG', { 
-                        month: 'short', 
-                        day: 'numeric', 
-                        year: 'numeric' 
+                    const formattedDate = date.toLocaleDateString('en-NG', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
                     });
-                    
+
                     html += `
-                        <div style="background: white; padding: 1.5rem; border-radius: 12px; border-left: 4px solid ${getConfidenceColor(session.confidence)};">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                        <div style="background: white; padding: 1.5rem; border-radius: 12px; border-left: 4px solid ${getConfidenceColor(session.confidence)}; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
                                 <div>
-                                    <strong style="color: #1a1a1a;">Session ${data.sessions.length - index}</strong>
-                                    <span style="color: #666; margin-left: 1rem;">${formattedDate} (${session.days_ago} days ago)</span>
+                                    <strong style="color: #1a1a1a; font-size: 1.1rem;">Session ${data.sessions.length - index}</strong>
+                                    <div style="color: #666; margin-top: 0.25rem; font-size: 0.9rem;">${formattedDate} ${session.days_ago > 0 ? `(${session.days_ago} day${session.days_ago !== 1 ? 's' : ''} ago)` : '(today)'}</div>
                                 </div>
-                                <div style="background: ${getConfidenceColor(session.confidence)}; color: white; padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.9rem; font-weight: 600;">
+                                <div style="background: ${getConfidenceColor(session.confidence)}; color: white; padding: 0.5rem 1rem; border-radius: 50px; font-size: 0.9rem; font-weight: 600;">
                                     Confidence: ${session.confidence}/5
                                 </div>
                             </div>
-                            
+
                             ${session.struggles ? `
-                                <div style="margin-bottom: 0.5rem;">
-                                    <strong style="color: #666;">What you struggled with:</strong>
-                                    <p style="color: #1a1a1a; margin-top: 0.25rem;">${session.struggles}</p>
+                                <div style="margin-bottom: 1rem; padding: 1rem; background: #fef3f2; border-radius: 8px;">
+                                    <strong style="color: #dc2626; font-size: 0.9rem;">💭 What you struggled with:</strong>
+                                    <p style="color: #1a1a1a; margin-top: 0.5rem; line-height: 1.5;">${session.struggles}</p>
                                 </div>
                             ` : ''}
-                            
+
                             ${session.forgot ? `
-                                <div style="margin-bottom: 0.5rem;">
-                                    <strong style="color: #666;">What you forgot:</strong>
-                                    <p style="color: #1a1a1a; margin-top: 0.25rem;">${session.forgot}</p>
+                                <div style="margin-bottom: 1rem; padding: 1rem; background: #fef9c3; border-radius: 8px;">
+                                    <strong style="color: #ca8a04; font-size: 0.9rem;">❓ What you forgot:</strong>
+                                    <p style="color: #1a1a1a; margin-top: 0.5rem; line-height: 1.5;">${session.forgot}</p>
                                 </div>
                             ` : ''}
-                            
+
                             ${session.unclear ? `
-                                <div style="margin-bottom: 0.5rem;">
-                                    <strong style="color: #666;">What was unclear:</strong>
-                                    <p style="color: #1a1a1a; margin-top: 0.25rem;">${session.unclear}</p>
+                                <div style="margin-bottom: 1rem; padding: 1rem; background: #eff6ff; border-radius: 8px;">
+                                    <strong style="color: #2563eb; font-size: 0.9rem;">🤔 What was unclear:</strong>
+                                    <p style="color: #1a1a1a; margin-top: 0.5rem; line-height: 1.5;">${session.unclear}</p>
                                 </div>
                             ` : ''}
-                            
-                            <div style="color: #666; font-size: 0.9rem; margin-top: 0.5rem;">
-                                Duration: ${Math.floor(session.duration_seconds / 60)}min ${session.duration_seconds % 60}s
+
+                            <div style="color: #666; font-size: 0.85rem; margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid #e5e7eb;">
+                                ⏱️ Duration: ${Math.floor(session.duration_seconds / 60)}min ${session.duration_seconds % 60}s
                             </div>
                         </div>
                     `;
                 });
-                
+
                 html += '</div>';
                 container.innerHTML = html;
-                
+
             } catch (error) {
                 console.error('Error loading reflections:', error);
-                document.getElementById('reflectionsList').innerHTML = 
-                    '<p style="color: #c33;">Error loading past sessions</p>';
+                document.getElementById('reflectionsList').innerHTML =
+                    '<p style="color: #ef4444; text-align: center;">Error loading past sessions. Please refresh the page.</p>';
             }
         }
 
+        // Updated confidence color function
         function getConfidenceColor(confidence) {
             const colors = {
                 1: '#ef4444',  // Red
@@ -521,7 +523,7 @@
                             <button class="btn" onclick="window.location.href='/topics'">
                                 ← Back to Topics
                             </button>
-                            <button class="btn" style="background: white; color: #667eea;" onclick="window.location.href='/dashboard'">
+                            <button class="btn" style="background: white; color: #667eea;" onclick="window.location.href = '/dashboard?refresh=' + Date.now();">
                                 Go to Dashboard →
                             </button>
                         </div>

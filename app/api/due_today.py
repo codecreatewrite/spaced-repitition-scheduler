@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from datetime import datetime, date
 from app.db.session import get_db
 from app.models.schedule import Schedule
+from app.models.topic import Topic
 from app.db.topic_crud import TopicCRUD
 from app.core.dependencies import get_current_user
 from app.models.user import User
@@ -20,11 +21,13 @@ async def get_due_today(
     today = date.today()
     now = datetime.now()
     
-    # ✅ FIXED: Get schedules due TODAY OR EARLIER (includes overdue)
-    due_schedules = db.query(Schedule).filter(
+    # ✅ OPTIMIZED: Eager-load topics with schedules (prevents N+1 queries)
+    due_schedules = db.query(Schedule).options(
+        joinedload(Schedule.topic_relation)
+    ).filter(
         Schedule.user_id == current_user.id,
         Schedule.start_date <= datetime.combine(today, datetime.max.time()),
-        Schedule.topic_id != None
+        Schedule.topic_id != None  # Only schedules with linked topics
     ).all()
     
     # Get all user's topics for context
@@ -34,17 +37,15 @@ async def get_due_today(
     reviews_due = []
     
     for schedule in due_schedules:
-        # Find matching topic
-        topic = None
-        if schedule.topic_id:
-            topic = TopicCRUD.get_by_id(db, schedule.topic_id)
+        # ✅ Use eager-loaded topic (already in memory, no extra query)
+        topic = schedule.topic_relation
         
         # Calculate how overdue (if at all)
         days_overdue = (now.date() - schedule.start_date.date()).days
         
         reviews_due.append({
             "schedule_id": schedule.id,
-            "topic": schedule.topic,
+            "topic": topic.title if topic else schedule.topic,  # ✅ Fallback to schedule.topic
             "topic_id": schedule.topic_id,
             "topic_exists": topic is not None,
             "can_explain": topic is not None,
@@ -55,7 +56,7 @@ async def get_due_today(
             "status": "overdue" if days_overdue > 0 else "due_today"
         })
     
-    # ✅ FIXED: Topics that need review (exclude if they have FUTURE schedule)
+    # ✅ Topics that need review (exclude if they have FUTURE schedule)
     topics_needing_review = []
     scheduled_topic_ids = {s.topic_id for s in due_schedules if s.topic_id}
     
@@ -68,16 +69,16 @@ async def get_due_today(
         future_schedule = db.query(Schedule).filter(
             Schedule.topic_id == topic.id,
             Schedule.user_id == current_user.id,
-            Schedule.start_date > now  # ✅ Only exclude if scheduled in FUTURE
+            Schedule.start_date > now
         ).first()
         
         # If has future schedule, skip
         if future_schedule:
             continue
         
-        # If never explained, suggest it
+        # If never explained, skip
         if not topic.last_explained:
-            continue  # Don't suggest brand new topics
+            continue
         
         # Calculate days since last explained
         days_since = (now - topic.last_explained).days

@@ -249,6 +249,10 @@ async def save_explain_session(
             next_review_date=next_review_date
         )
 
+        # ✅ FORCE COMMIT (ensure DB writes immediately)
+        db.commit()
+        db.flush()
+
         print(f"✅ Schedule saved: {schedule.id}")
         print(f"   Next review: {next_review_date} ({days_until_review} days)")
     else:
