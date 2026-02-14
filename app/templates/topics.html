@@ -90,6 +90,7 @@
             gap: 1.5rem;
         }
         .topic-card {
+            position: relative; /* For absolute positioning of status badge */
             background: white;
             padding: 1.5rem;
             border-radius: 12px;
@@ -275,33 +276,58 @@
                 }
 
                 container.innerHTML = data.topics.map(topic => {
-                    const confidenceColor = topic.avg_confidence >= 4 ? '#10b981' :
-                                           topic.avg_confidence >= 3 ? '#f59e0b' : '#ef4444';
+                    // Use memory_strength from backend, or provide defaults
+                    const strength = topic.memory_strength || {
+                        status: "UNKNOWN",
+                        color: "#999",
+                        emoji: "❓",
+                        message: "Unknown status"
+                    };
 
                     return `
-                       <div class="topic-card">
+                        <div class="topic-card" style="border-left: 4px solid ${strength.color};">
+                            <!-- Memory Strength Badge (Top Right) -->
+                            <div style="position: absolute; top: 1rem; right: 1rem; 
+                                        background: ${strength.color}; color: white; 
+                                        padding: 0.4rem 0.8rem; border-radius: 20px; 
+                                        font-size: 0.75rem; font-weight: 700;">
+                                ${strength.emoji} ${strength.status}
+                            </div>
+                            
                             <div class="topic-title">${topic.title}</div>
                             ${topic.subject ? `<div class="topic-subject">📚 ${topic.subject}</div>` : ''}
 
+                            <!-- Memory Strength Message -->
+                            <div style="background: ${strength.color}15; 
+                                        color: ${strength.color}; 
+                                        padding: 0.75rem; 
+                                        border-radius: 8px; 
+                                        font-size: 0.85rem; 
+                                        margin-bottom: 1rem;
+                                        font-weight: 500;">
+                                ${strength.message}
+                            </div>
+
                             <div class="topic-stats">
                                 <span>🎯 ${topic.total_explains} explain${topic.total_explains !== 1 ? 's' : ''}</span>
-                              ${topic.avg_confidence > 0 ?
-                                    `<span style="color: ${confidenceColor}">⭐ ${topic.avg_confidence}/5</span>`
+                                ${topic.avg_confidence > 0 ? 
+                                    `<span style="color: ${strength.color}">⭐ ${topic.avg_confidence.toFixed(1)}/5</span>` 
                                     : '<span style="color: #999">Not explained yet</span>'}
                             </div>
 
-                            ${topic.last_explained ?
+                            ${topic.last_explained ? 
                                 `<div style="font-size: 0.85rem; color: #999; margin-bottom: 1rem;">
                                     Last explained: ${new Date(topic.last_explained).toLocaleDateString()}
-                                </div>`
+                                </div>` 
                                 : ''}
 
                             <div class="topic-actions">
-                                <button class="btn" onclick="startExplain('${topic.id}')">
+                                <button class="btn" onclick="startExplain('${topic.id}')" 
+                                        style="background: ${strength.color}; border-color: ${strength.color};">
                                     ${topic.total_explains > 0 ? '🔄 Explain Again' : '🎯 Start Explaining'}
                                 </button>
                                 <button class="btn btn-secondary" onclick="deleteTopic('${topic.id}')">🗑️</button>
-                          </div>
+                            </div>
                         </div>
                     `;
                 }).join('');
@@ -359,7 +385,7 @@
         // NEW FUNCTION: Countdown modal
         function showCountdownAndRedirect(topicId) {
             closeNewTopicModal();
-            
+
             // Create fullscreen countdown overlay
             const overlay = document.createElement('div');
             overlay.style.cssText = `
@@ -373,7 +399,7 @@
                 z-index: 10000;
                 color: white;
             `;
-            
+
             overlay.innerHTML = `
                 <div style="text-align: center;">
                     <div style="font-size: 2rem; margin-bottom: 2rem; opacity: 0.9;">
@@ -388,9 +414,9 @@
                     </div>
                 </div>
             `;
-            
+
             document.body.appendChild(overlay);
-            
+
             // Countdown 3, 2, 1
             let count = 3;
             const interval = setInterval(() => {

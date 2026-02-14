@@ -245,6 +245,92 @@
             <p id="greetingText">Let's see what you need to review today...</p>
         </div>
 
+        <!-- NEW: Memory Risk Dashboard -->
+        <div id="memoryRiskDashboard" style="margin-bottom: 2rem;">
+            <div style="background: white; padding: 2rem; border-radius: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.08);">
+                <h2 style="color: #667eea; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                    🧠 Memory Strength Overview
+                </h2>
+                
+                <!-- Loading State -->
+                <div id="memoryStatsLoading">
+                    <p style="color: #999;">Loading memory stats...</p>
+                </div>
+                
+                <!-- Stats Display (Hidden initially) -->
+                <div id="memoryStatsContent" style="display: none;">
+                    <!-- Exam Ready Metric -->
+                    <div style="text-align: center; padding: 2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                                border-radius: 12px; margin-bottom: 2rem; color: white;">
+                        <div style="font-size: 0.9rem; opacity: 0.9; margin-bottom: 0.5rem;">EXAM-READY TOPICS</div>
+                        <div style="font-size: 4rem; font-weight: 900;" id="examReadyPercent">0%</div>
+                        <div style="font-size: 1rem; opacity: 0.95; margin-top: 0.5rem;" id="examReadyMessage">
+                            Keep training to increase this number
+                        </div>
+                    </div>
+                    
+                    <!-- Risk Alert (Only show if topics at risk > 0) -->
+                    <div id="riskAlert" style="display: none; background: #fef2f2; border-left: 4px solid #ef4444; 
+                                               padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <div style="font-size: 2rem;">⚠️</div>
+                            <div style="flex: 1;">
+                                <strong style="color: #dc2626; font-size: 1.1rem;" id="riskAlertText">
+                                    3 topics at risk of being forgotten
+                                </strong>
+                                <p style="color: #666; margin-top: 0.5rem; font-size: 0.9rem;">
+                                    Review these soon to prevent memory decay
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Status Breakdown -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                        <div id="statusCritical" style="background: #fef2f2; padding: 1rem; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔴</div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: #ef4444;">0</div>
+                            <div style="font-size: 0.8rem; color: #999; margin-top: 0.25rem;">CRITICAL</div>
+                        </div>
+                        
+                        <div id="statusWeak" style="background: #fff7ed; padding: 1rem; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🟠</div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: #f97316;">0</div>
+                            <div style="font-size: 0.8rem; color: #999; margin-top: 0.25rem;">WEAK</div>
+                        </div>
+                        
+                        <div id="statusStrengthening" style="background: #fefce8; padding: 1rem; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🟡</div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: #eab308;">0</div>
+                            <div style="font-size: 0.8rem; color: #999; margin-top: 0.25rem;">STRENGTHENING</div>
+                        </div>
+                        
+                        <div id="statusStrong" style="background: #f0fdf4; padding: 1rem; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🟢</div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: #10b981;">0</div>
+                            <div style="font-size: 0.8rem; color: #999; margin-top: 0.25rem;">STRONG</div>
+                        </div>
+                        
+                        <div id="statusAutomatic" style="background: #faf5ff; padding: 1rem; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">💎</div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: #8b5cf6;">0</div>
+                            <div style="font-size: 0.8rem; color: #999; margin-top: 0.25rem;">AUTOMATIC</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Topics Needing Attention -->
+                    <div id="attentionTopicsSection" style="display: none;">
+                        <h3 style="color: #1a1a1a; margin-bottom: 1rem; font-size: 1.1rem;">
+                            🎯 Needs Your Attention
+                        </h3>
+                        <div id="attentionTopicsList" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Due Today Section -->
         <div class="due-today">
             <h2>🔔 Review Today</h2>
@@ -306,7 +392,7 @@
                 <h3 style="color: #667eea; font-size: 1.3rem;">📖 How to Use StudyCore (Click to expand)</h3>
                 <span id="guideToggle" style="font-size: 1.5rem;">▼</span>
             </div>
-            
+
             <div id="guideContent" style="display: none; margin-top: 1.5rem;">
                 <p style="color: #666; line-height: 1.7; margin-bottom: 1.5rem;">
                     <strong>StudyCore works BEST when used as part of your study routine.</strong> Here's the proven 5-step flow:
@@ -361,7 +447,7 @@
 
                 <div style="background: #f0f4ff; padding: 1.5rem; border-radius: 12px; margin-top: 1.5rem; border-left: 4px solid #667eea;">
                     <p style="color: #1a1a1a; margin: 0; line-height: 1.6;">
-                        <strong>💡 Pro Tip:</strong> Use StudyCore AFTER you've read the material, not before. 
+                        <strong>💡 Pro Tip:</strong> Use StudyCore AFTER you've read the material, not before.
                         Reading → StudyCore → Review. This is the proven formula.
                     </p>
                 </div>
@@ -389,7 +475,7 @@
         function toggleGuide() {
             const content = document.getElementById('guideContent');
             const toggle = document.getElementById('guideToggle');
-            
+
             if (content.style.display === 'none') {
                 content.style.display = 'block';
                 toggle.textContent = '▲';
@@ -411,6 +497,86 @@
                 document.getElementById('guideToggle').textContent = '▲';
             }
         });
+
+        // Load memory stats on page load
+        async function loadMemoryStats() {
+            try {
+                const response = await fetch('/api/topics/memory-stats');
+                const data = await response.json();
+                
+                // Hide loading, show content
+                document.getElementById('memoryStatsLoading').style.display = 'none';
+                document.getElementById('memoryStatsContent').style.display = 'block';
+                
+                // Update exam-ready percentage
+                const examReadyPercent = data.exam_ready_percent;
+                document.getElementById('examReadyPercent').textContent = examReadyPercent + '%';
+                
+                // Update message based on percentage
+                const messageEl = document.getElementById('examReadyMessage');
+                if (examReadyPercent >= 80) {
+                    messageEl.textContent = '🎉 Excellent! You\'re well-prepared';
+                    messageEl.style.color = '#10b981';
+                } else if (examReadyPercent >= 50) {
+                    messageEl.textContent = 'Good progress! Keep strengthening';
+                } else if (examReadyPercent > 0) {
+                    messageEl.textContent = 'Keep training to increase this number';
+                } else {
+                    messageEl.textContent = 'Start explaining topics to build memory strength';
+                }
+                
+                // Show risk alert if needed
+                if (data.topics_at_risk > 0) {
+                    document.getElementById('riskAlert').style.display = 'block';
+                    document.getElementById('riskAlertText').textContent = 
+                        `${data.topics_at_risk} topic${data.topics_at_risk !== 1 ? 's' : ''} at risk of being forgotten`;
+                }
+                
+                // Update status counts
+                document.querySelector('#statusCritical div:nth-child(2)').textContent = data.by_status.CRITICAL;
+                document.querySelector('#statusWeak div:nth-child(2)').textContent = data.by_status.WEAK;
+                document.querySelector('#statusStrengthening div:nth-child(2)').textContent = data.by_status.STRENGTHENING;
+                document.querySelector('#statusStrong div:nth-child(2)').textContent = data.by_status.STRONG;
+                document.querySelector('#statusAutomatic div:nth-child(2)').textContent = data.by_status.AUTOMATIC;
+                
+                // Show topics needing attention
+                if (data.topics_needing_attention.length > 0) {
+                    document.getElementById('attentionTopicsSection').style.display = 'block';
+                    
+                    const listHTML = data.topics_needing_attention.map(topic => {
+                        const strength = topic.strength;
+                        return `
+                            <div style="background: white; padding: 1rem; border-radius: 8px; 
+                                        border-left: 4px solid ${strength.color}; 
+                                        display: flex; justify-content: space-between; align-items: center;
+                                        box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; color: #1a1a1a; margin-bottom: 0.25rem;">
+                                        ${topic.title}
+                                    </div>
+                                    <div style="font-size: 0.85rem; color: ${strength.color};">
+                                        ${strength.emoji} ${strength.message}
+                                    </div>
+                                </div>
+                                <button onclick="window.location.href='/explain/${topic.id}'" 
+                                        style="background: ${strength.color}; color: white; 
+                                               border: none; padding: 0.5rem 1rem; border-radius: 6px; 
+                                               font-weight: 600; cursor: pointer; white-space: nowrap;">
+                                    Explain Now
+                                </button>
+                            </div>
+                        `;
+                    }).join('');
+                    
+                    document.getElementById('attentionTopicsList').innerHTML = listHTML;
+                }
+                
+            } catch (error) {
+                console.error('Error loading memory stats:', error);
+                document.getElementById('memoryStatsLoading').innerHTML = 
+                    '<p style="color: #ef4444;">Error loading stats. Please refresh.</p>';
+            }
+        }
 
         // Load due reviews
         async function loadDueReviews() {
@@ -537,8 +703,11 @@
         }
 
         // Load everything
-        loadDueReviews();
-        loadQuickStats();
+        window.addEventListener('DOMContentLoaded', () => {
+            loadMemoryStats();
+            loadDueReviews();
+            loadQuickStats();
+        });
     </script>
 </body>
 </html>

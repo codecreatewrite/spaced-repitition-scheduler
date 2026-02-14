@@ -46,6 +46,80 @@ def calculate_next_review_date(confidence: int) -> date:
     days = confidence_to_days.get(confidence, 3)
     return date.today() + timedelta(days=days)
 
+# Helper: Calculate memory strength for a topic
+def calculate_memory_strength(topic) -> dict:
+    """
+    Calculate memory strength status for a topic.
+    
+    Returns:
+        {
+            "status": str,  # CRITICAL, WEAK, STRENGTHENING, STRONG, AUTOMATIC
+            "color": str,   # Hex color code
+            "emoji": str,   # Visual indicator
+            "message": str  # Explanation
+        }
+    """
+    # Default state (never explained)
+    if topic.total_explains == 0:
+        return {
+            "status": "CRITICAL",
+            "color": "#ef4444",
+            "emoji": "🔴",
+            "message": "Never explained - high forgetting risk"
+        }
+    
+    # Calculate days since last explain
+    days_since_last = None
+    if topic.last_explained:
+        days_since_last = (datetime.utcnow() - topic.last_explained).days
+    
+    avg_conf = topic.avg_confidence or 0
+    total = topic.total_explains
+    
+    # AUTOMATIC: Mastered (5/5 confidence + 5+ repetitions)
+    if avg_conf >= 5.0 and total >= 5:
+        return {
+            "status": "AUTOMATIC",
+            "color": "#8b5cf6",
+            "emoji": "💎",
+            "message": "Mastered - automatic recall"
+        }
+    
+    # STRONG: High confidence + recent review
+    if avg_conf >= 4.0 and (days_since_last is None or days_since_last < 7):
+        return {
+            "status": "STRONG",
+            "color": "#10b981",
+            "emoji": "🟢",
+            "message": "Strong memory - well retained"
+        }
+    
+    # STRENGTHENING: Moderate confidence + reasonable recency
+    if avg_conf >= 3.0 and (days_since_last is None or days_since_last < 7):
+        return {
+            "status": "STRENGTHENING",
+            "color": "#eab308",
+            "emoji": "🟡",
+            "message": "Strengthening - needs more practice"
+        }
+    
+    # WEAK: Low confidence OR moderate staleness
+    if avg_conf < 3.0 or (days_since_last and 7 <= days_since_last < 14):
+        return {
+            "status": "WEAK",
+            "color": "#f97316",
+            "emoji": "🟠",
+            "message": "Weak memory - review soon"
+        }
+    
+    # CRITICAL: Very low confidence OR very stale
+    return {
+        "status": "CRITICAL",
+        "color": "#ef4444",
+        "emoji": "🔴",
+        "message": "Critical - forgetting likely"
+    }
+
 # Helper: Create or update schedule (ONE schedule per topic)
 def create_or_update_schedule(
     db: Session,
@@ -123,7 +197,7 @@ async def list_topics(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Get all topics for current user"""
+    """Get all topics for current user WITH MEMORY STRENGTH"""
     topics = TopicCRUD.get_user_topics(db, current_user.id)
 
     return {
@@ -137,10 +211,94 @@ async def list_topics(
                 "total_explains": t.total_explains,
                 "avg_confidence": t.avg_confidence,
                 "last_explained": t.last_explained.isoformat() if t.last_explained else None,
-                "created_at": t.created_at.isoformat()
+                "created_at": t.created_at.isoformat(),
+                "memory_strength": calculate_memory_strength(t)  # ← NEW
             }
             for t in topics
         ]
+    }
+
+@router.get("/memory-stats")
+async def get_memory_stats(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Get memory strength statistics for dashboard.
+    
+    Returns:
+        - Total topics
+        - Topics by memory strength status
+        - Exam-ready percentage
+        - Topics at risk count
+    """
+    topics = TopicCRUD.get_user_topics(db, current_user.id)
+    
+    if not topics:
+        return {
+            "total_topics": 0,
+            "exam_ready_percent": 0,
+            "topics_at_risk": 0,
+            "by_status": {
+                "CRITICAL": 0,
+                "WEAK": 0,
+                "STRENGTHENING": 0,
+                "STRONG": 0,
+                "AUTOMATIC": 0
+            },
+            "topics_needing_attention": []
+        }
+    
+    # Calculate memory strength for each topic
+    status_counts = {
+        "CRITICAL": 0,
+        "WEAK": 0,
+        "STRENGTHENING": 0,
+        "STRONG": 0,
+        "AUTOMATIC": 0
+    }
+    
+    critical_topics = []
+    weak_topics = []
+    
+    for topic in topics:
+        strength = calculate_memory_strength(topic)
+        status = strength["status"]
+        status_counts[status] += 1
+        
+        if status == "CRITICAL":
+            critical_topics.append({
+                "id": topic.id,
+                "title": topic.title,
+                "strength": strength
+            })
+        elif status == "WEAK":
+            weak_topics.append({
+                "id": topic.id,
+                "title": topic.title,
+                "strength": strength
+            })
+    
+    # Calculate exam-ready percentage (STRONG + AUTOMATIC)
+    exam_ready_count = status_counts["STRONG"] + status_counts["AUTOMATIC"]
+    exam_ready_percent = int((exam_ready_count / len(topics)) * 100) if topics else 0
+    
+    # Topics at risk = CRITICAL + WEAK
+    topics_at_risk = status_counts["CRITICAL"] + status_counts["WEAK"]
+    
+    # Topics needing immediate attention
+    topics_needing_attention = critical_topics + weak_topics
+    topics_needing_attention = sorted(
+        topics_needing_attention, 
+        key=lambda x: 0 if x["strength"]["status"] == "CRITICAL" else 1
+    )[:5]  # Top 5 most urgent
+    
+    return {
+        "total_topics": len(topics),
+        "exam_ready_percent": exam_ready_percent,
+        "topics_at_risk": topics_at_risk,
+        "by_status": status_counts,
+        "topics_needing_attention": topics_needing_attention
     }
 
 @router.get("/{topic_id}")
@@ -275,15 +433,15 @@ async def get_topic_sessions(
     db: Session = Depends(get_db)
 ):
     """Get all explain sessions for a topic with reflections"""
-    
+
     # Verify topic ownership
     topic = TopicCRUD.get_by_id(db, topic_id)
     if not topic or topic.user_id != current_user.id:
         raise HTTPException(status_code=404, detail="Topic not found")
-    
+
     # Get all sessions
     sessions = ExplainSessionCRUD.get_topic_sessions(db, topic_id)
-    
+
     return {
         "topic_id": topic_id,
         "topic_title": topic.title,
