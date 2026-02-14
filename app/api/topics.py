@@ -109,6 +109,7 @@ async def create_topic(
 
     return {
         "success": True,
+        "force_explain": True,
         "topic": {
             "id": topic.id,
             "title": topic.title,

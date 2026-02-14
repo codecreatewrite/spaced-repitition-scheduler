@@ -214,13 +214,13 @@
             <span>{{ user.name }}</span>
         </div>
     </nav>
-    
+
     <div class="container">
         <div class="page-header">
             <h1>📖 My Topics</h1>
             <button class="btn" onclick="openNewTopicModal()">+ New Topic</button>
         </div>
-        
+
         <div id="topicsContainer" class="topics-grid">
             <div class="empty-state">
                 <div class="empty-state-icon">📚</div>
@@ -228,7 +228,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- New Topic Modal -->
     <div id="newTopicModal" class="modal">
         <div class="modal-content">
@@ -253,15 +253,15 @@
             </form>
         </div>
     </div>
-    
+
     <script>
         async function loadTopics() {
             try {
                 const response = await fetch('/api/topics/list');
                 const data = await response.json();
-                
+
                 const container = document.getElementById('topicsContainer');
-                
+
                 if (data.total === 0) {
                     container.innerHTML = `
                         <div class="empty-state" style="grid-column: 1/-1;">
@@ -273,29 +273,29 @@
                     `;
                     return;
                 }
-                
+
                 container.innerHTML = data.topics.map(topic => {
-                    const confidenceColor = topic.avg_confidence >= 4 ? '#10b981' : 
+                    const confidenceColor = topic.avg_confidence >= 4 ? '#10b981' :
                                            topic.avg_confidence >= 3 ? '#f59e0b' : '#ef4444';
 
                     return `
                        <div class="topic-card">
                             <div class="topic-title">${topic.title}</div>
                             ${topic.subject ? `<div class="topic-subject">📚 ${topic.subject}</div>` : ''}
-            
+
                             <div class="topic-stats">
                                 <span>🎯 ${topic.total_explains} explain${topic.total_explains !== 1 ? 's' : ''}</span>
-                              ${topic.avg_confidence > 0 ? 
-                                    `<span style="color: ${confidenceColor}">⭐ ${topic.avg_confidence}/5</span>` 
+                              ${topic.avg_confidence > 0 ?
+                                    `<span style="color: ${confidenceColor}">⭐ ${topic.avg_confidence}/5</span>`
                                     : '<span style="color: #999">Not explained yet</span>'}
                             </div>
-            
-                            ${topic.last_explained ? 
+
+                            ${topic.last_explained ?
                                 `<div style="font-size: 0.85rem; color: #999; margin-bottom: 1rem;">
                                     Last explained: ${new Date(topic.last_explained).toLocaleDateString()}
-                                </div>` 
+                                </div>`
                                 : ''}
-            
+
                             <div class="topic-actions">
                                 <button class="btn" onclick="startExplain('${topic.id}')">
                                     ${topic.total_explains > 0 ? '🔄 Explain Again' : '🎯 Start Explaining'}
@@ -310,37 +310,44 @@
                 document.getElementById('topicsContainer').innerHTML = '<p style="color: #c33;">Error loading topics</p>';
             }
         }
-        
+
         function openNewTopicModal() {
             document.getElementById('newTopicModal').classList.add('active');
         }
-        
+
         function closeNewTopicModal() {
             document.getElementById('newTopicModal').classList.remove('active');
             document.getElementById('newTopicForm').reset();
         }
-        
+
+        // New form submission with countdown redirect
         document.getElementById('newTopicForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            
+
             const topicData = {
                 title: document.getElementById('topicTitle').value,
                 subject: document.getElementById('topicSubject').value || null,
                 description: document.getElementById('topicDescription').value || null
             };
-            
+
             try {
                 const response = await fetch('/api/topics/create', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(topicData)
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (data.success) {
-                    closeNewTopicModal();
-                    loadTopics();
+                    if (data.force_explain) {
+                        // Show 3-second countdown, then force explain
+                        showCountdownAndRedirect(data.topic.id);
+                    } else {
+                        // Fallback (shouldn't happen)
+                        closeNewTopicModal();
+                        loadTopics();
+                    }
                 } else {
                     alert('Error creating topic');
                 }
@@ -348,19 +355,67 @@
                 alert('Error: ' + error.message);
             }
         });
-        
+
+        // NEW FUNCTION: Countdown modal
+        function showCountdownAndRedirect(topicId) {
+            closeNewTopicModal();
+            
+            // Create fullscreen countdown overlay
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0; left: 0; right: 0; bottom: 0;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+                color: white;
+            `;
+            
+            overlay.innerHTML = `
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; margin-bottom: 2rem; opacity: 0.9;">
+                        Topic Created! 🎯
+                    </div>
+                    <div style="font-size: 8rem; font-weight: 900; margin-bottom: 1rem;" id="countdownNumber">3</div>
+                    <div style="font-size: 1.5rem; opacity: 0.95;">
+                        Starting Explain Mode...
+                    </div>
+                    <div style="margin-top: 2rem; font-size: 1.1rem; opacity: 0.85; max-width: 500px; line-height: 1.6;">
+                        Remember: The struggle is the point. Don't peek at notes. Just explain what you remember.
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(overlay);
+            
+            // Countdown 3, 2, 1
+            let count = 3;
+            const interval = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    document.getElementById('countdownNumber').textContent = count;
+                } else {
+                    clearInterval(interval);
+                    window.location.href = `/explain/${topicId}`;
+                }
+            }, 1000);
+        }
+
         function startExplain(topicId) {
             window.location.href = `/explain/${topicId}`;
         }
-        
+
         async function deleteTopic(topicId) {
             if (!confirm('Delete this topic? This will also delete all explain sessions.')) return;
-            
+
             try {
                 const response = await fetch(`/api/topics/${topicId}`, {
                     method: 'DELETE'
                 });
-                
+
                 if (response.ok) {
                     loadTopics();
                 } else {
@@ -370,7 +425,7 @@
                 alert('Error: ' + error.message);
             }
         }
-        
+
         // Load topics on page load and check for prefilled topic
         window.addEventListener('DOMContentLoaded', function() {
             const prefilledTopic = localStorage.getItem('prefill_topic');
@@ -381,7 +436,7 @@
             }
             loadTopics();
         });
-        
+
         // Close modal when clicking outside
         document.getElementById('newTopicModal').addEventListener('click', function(e) {
             if (e.target === this) {

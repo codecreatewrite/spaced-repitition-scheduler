@@ -205,7 +205,6 @@
 
             <div class="controls">
                 <button class="btn" id="startBtn" onclick="startTimer()">Start Explaining</button>
-                <button class="btn btn-secondary" onclick="skipToReflection()">Skip to Reflection</button>
             </div>
         </div>
 
@@ -258,6 +257,23 @@
             <!-- This will be populated by JavaScript after saving -->
         </div>
     </div>
+
+    <!-- Emergency Exit Button (fixed bottom-right) -->
+    <button 
+        onclick="confirmQuit()" 
+        style="position: fixed; 
+               bottom: 20px; 
+               right: 20px; 
+               background: rgba(255,255,255,0.2); 
+               color: white; 
+               border: 1px solid rgba(255,255,255,0.3); 
+               padding: 0.5rem 1rem; 
+               border-radius: 8px; 
+               font-size: 0.85rem; 
+               cursor: pointer;
+               z-index: 100;">
+        Emergency Exit
+    </button>
 
     <script>
         const topicId = window.location.pathname.split('/').pop();
@@ -401,13 +417,7 @@
             loadPastReflections();
         }
 
-        function skipToReflection() {
-            if (confirm('Skip the timer? You can still fill out the reflection.')) {
-                startTime = Date.now();
-                timeRemaining = 0;
-                endTimer();
-            }
-        }
+        // Removed skipToReflection function per instructions
 
         function selectConfidence(level) {
             selectedConfidence = level;
@@ -446,6 +456,19 @@
                 5: "Excellent! You could teach this. Review periodically to maintain mastery."
             };
             return messages[confidence] || "Keep up the good work!";
+        }
+
+        // NEW: Emergency exit confirmation
+        function confirmQuit() {
+            const confirmed = confirm(
+                "⚠️ WARNING: Quitting without completing breaks your learning.\n\n" +
+                "You'll lose progress on this topic and it will stay marked as 'UNTRAINED'.\n\n" +
+                "Are you SURE you want to quit?"
+            );
+            
+            if (confirmed) {
+                window.location.href = '/dashboard';
+            }
         }
 
         document.getElementById('reflectionForm').addEventListener('submit', async function(e) {
