@@ -2,31 +2,31 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
     {% include "_mobile_styles.html" %}
 
-    <!-- Primary Meta Tags -->
+    <!-- PRIMARY META TAGS -->
     <title>StudyCore – Train Recall. Control Exams.</title>
     <meta name="title" content="StudyCore – Train Recall. Control Exams.">
     <meta name="description" content="Stop rereading. Start proving. StudyCore forces you to explain topics from memory and shows your real exam readiness. Built for serious Nigerian students.">
     <meta name="keywords" content="study app Nigeria, spaced repetition, active recall, university students, exam preparation, Nigerian education, study schedule">
     <meta name="author" content="Goodnews Okpubigho">
 
-    <!-- Open Graph / Facebook -->
+    <!-- OPEN GRAPH / FACEBOOK -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://studycore.com.ng">
     <meta property="og:title" content="StudyCore – Train Recall. Control Exams.">
     <meta property="og:description" content="You don’t fail because you're not smart. You fail because you never trained retrieval properly. StudyCore forces you to prove what you actually know.">
     <meta property="og:site_name" content="StudyCore">
 
-    <!-- Twitter -->
+    <!-- TWITTER -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://studycore.com.ng">
     <meta property="twitter:title" content="StudyCore – Train Recall. Control Exams.">
     <meta property="twitter:description" content="Stop rereading. Start proving. StudyCore forces you to explain topics from memory and shows your real exam readiness.">
 
-    <!-- Google Site Verification -->
+    <!-- GOOGLE SITE VERIFICATION -->
     <meta name="google-site-verification" content="CYRvIriA_IV95si1v-q_oXoW-HHMN0bUe9Oj68exdhU">
 
     <style>
@@ -34,13 +34,13 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-            background: #f5f7fa;
+            background: #ffffff;
             color: #1a1a1a;
             line-height: 1.6;
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 1100px;
             margin: 0 auto;
             padding: 0 2rem;
         }
@@ -60,72 +60,66 @@
         }
 
         h2 {
-            font-size: clamp(2rem, 4vw, 2.5rem);
+            font-size: clamp(2rem, 4vw, 2.8rem);
             margin-bottom: 2rem;
             color: #1a1a1a;
         }
 
-        /* Navigation / Dashboard button */
-        .dashboard-link {
-            position: fixed;
-            top: 1.5rem;
-            right: 2rem;
-            z-index: 100;
-        }
-
+        /* BUTTONS – refined, consistent style */
         .btn {
             display: inline-block;
-            background: #667eea;
-            color: white;
-            padding: 0.8rem 2rem;
+            background: white;
+            color: #667eea;
+            padding: 1rem 2.5rem;
             border-radius: 50px;
-            font-weight: 600;
-            font-size: 1rem;
+            font-weight: 700;
+            font-size: 1.1rem;
             text-decoration: none;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 8px 20px -5px rgba(102, 126, 234, 0.4),
+                        0 0 0 1px rgba(255, 255, 255, 0.1);
+            transition: all 0.25s ease;
             border: none;
             cursor: pointer;
-            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
         }
 
         .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px -5px rgba(102, 126, 234, 0.5);
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: #667eea;
-            border: 2px solid #667eea;
-            box-shadow: none;
-        }
-
-        .btn-outline:hover {
-            background: #667eea;
-            color: white;
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px -5px rgba(102, 126, 234, 0.5),
+                        0 0 0 1px rgba(255, 255, 255, 0.2);
         }
 
         .btn-large {
             padding: 1.2rem 3rem;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
         }
 
-        .btn-start {
+        /* Fixed dashboard button (smaller) */
+        .dashboard-link {
+            position: fixed;
+            top: 1.5rem;
+            right: 2rem;
+            z-index: 1000;
+        }
+        .dashboard-link .btn {
+            padding: 0.7rem 1.5rem;
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        /* Outline variant (used rarely) */
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+            box-shadow: none;
+        }
+        .btn-outline:hover {
             background: white;
             color: #667eea;
-            padding: 1.2rem 3.2rem;
-            font-size: 1.2rem;
-            font-weight: 700;
-            box-shadow: 0 8px 20px -5px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.1);
-           transition: all 0.25s ease;
-        }
-        
-        .btn-start:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 15px 30px -5px rgba(102, 126, 234, 0.5), 0 0 0 1px rgba(255,255,255,0.2);
+            transform: translateY(-2px);
         }
 
-        /* Hero Section */
+        /* HERO */
         .hero {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -138,39 +132,40 @@
         }
 
         .logo {
-            font-size: 1.25rem;
+            font-size: 1.3rem;
             font-weight: 700;
-            letter-spacing: 0.1em;
-            opacity: 0.8;
+            letter-spacing: 3px;
+            opacity: 0.9;
             margin-bottom: 3rem;
             text-transform: uppercase;
         }
 
         .hero h1 {
             color: white;
+            margin-bottom: 1.5rem;
         }
 
         .hero p {
             font-size: 1.25rem;
-            opacity: 0.9;
-            max-width: 650px;
+            opacity: 0.95;
+            max-width: 750px;
             margin: 0 auto 2.5rem;
         }
 
-        .hero .subtext {
-            margin-top: 1.5rem;
-            font-size: 0.9rem;
-            opacity: 0.7;
+        .trust-line {
+            margin-top: 2rem;
+            font-size: 0.95rem;
+            opacity: 0.8;
         }
 
-        /* Truth Section */
+        /* TRUTH SECTION */
         .truth {
-            background: white;
-            border-bottom: 1px solid #e0e0e0;
+            background: #f9fafb;
+            border-bottom: 1px solid #eaeef2;
         }
 
         .truth p {
-            font-size: 1.2rem;
+            font-size: 1.25rem;
             margin-bottom: 1.2rem;
             color: #333;
         }
@@ -179,56 +174,79 @@
             color: #667eea;
         }
 
-        /* Process Section */
-        .process {
-            background: #f9fafb;
-        }
-
-        .steps {
-            margin: 3rem 0;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            text-align: left;
-        }
-
-        .step {
+        .truth-highlight {
             background: white;
             padding: 2rem;
             border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            transition: transform 0.2s;
+            margin-top: 2rem;
+            border-left: 6px solid #667eea;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.02);
+        }
+
+        /* PROCESS */
+        .process {
+            background: white;
+        }
+
+        .process h2 {
+            text-align: center;
+        }
+
+        .process-sub {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 3rem;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .step {
+            background: #f9fafb;
+            padding: 2.5rem 2rem;
+            border-radius: 20px;
+            text-align: left;
+            transition: all 0.2s;
+            border: 1px solid #edf2f7;
         }
 
         .step:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+            transform: translateY(-6px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.1);
+            border-color: #667eea;
         }
 
         .step h3 {
             color: #667eea;
             margin-bottom: 1rem;
-            font-size: 1.3rem;
+            font-size: 1.4rem;
         }
 
         .step p {
-            color: #666;
+            color: #4a5568;
         }
 
-        /* Memory States Preview */
-        .memory-states {
-            background: white;
-            padding: 2rem;
-            border-radius: 16px;
-            margin: 3rem 0;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            border: 1px solid #e0e0e0;
+        /* MEMORY DASHBOARD PREVIEW */
+        .memory-preview {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: 32px;
+            margin: 4rem auto 0;
+            max-width: 900px;
+            box-shadow: 0 25px 40px -10px rgba(102, 126, 234, 0.5);
         }
 
-        .memory-states h3 {
-            margin-bottom: 1.5rem;
-            color: #667eea;
+        .memory-preview h3 {
+            font-size: 1.8rem;
             text-align: center;
+            margin-bottom: 2rem;
+            font-weight: 700;
         }
 
         .states-grid {
@@ -236,37 +254,68 @@
             flex-wrap: wrap;
             gap: 1rem;
             justify-content: center;
+            margin-bottom: 2.5rem;
         }
 
         .state-badge {
-            background: #f0f0f0;
-            padding: 0.6rem 1.2rem;
-            border-radius: 30px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(4px);
+            padding: 0.7rem 1.5rem;
+            border-radius: 40px;
             font-weight: 600;
-            font-size: 0.95rem;
             display: inline-flex;
             align-items: center;
-            gap: 0.4rem;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            gap: 0.5rem;
+            border: 1px solid rgba(255,255,255,0.3);
         }
 
-        .state-badge.critical { background: #fef2f2; color: #ef4444; }
-        .state-badge.weak { background: #fff7ed; color: #f97316; }
-        .state-badge.strengthening { background: #fefce8; color: #eab308; }
-        .state-badge.strong { background: #f0fdf4; color: #22c55e; }
-        .state-badge.automatic { background: #faf5ff; color: #8b5cf6; }
+        .exam-ready-metric {
+            text-align: center;
+            background: rgba(255,255,255,0.2);
+            padding: 2rem;
+            border-radius: 20px;
+            margin-top: 1.5rem;
+        }
 
-        /* Filter Section */
+        .exam-ready-number {
+            font-size: 4rem;
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .exam-ready-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            letter-spacing: 1px;
+        }
+
+        .risk-tag {
+            margin-top: 1rem;
+            display: inline-block;
+            background: rgba(239, 68, 68, 0.3);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            border: 1px solid #ef4444;
+        }
+
+        /* FILTER SECTION */
         .filter {
-            background: white;
-            border-bottom: 1px solid #e0e0e0;
+            background: #f9fafb;
         }
 
         .filter-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 3rem;
-            margin-top: 2rem;
+            max-width: 900px;
+            margin: 2rem auto 0;
+        }
+
+        .filter-col h3 {
+            font-size: 1.6rem;
+            margin-bottom: 1.5rem;
         }
 
         .filter-list {
@@ -274,111 +323,147 @@
         }
 
         .filter-list li {
-            margin-bottom: 0.8rem;
-            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
             display: flex;
             align-items: center;
-            gap: 0.6rem;
+            gap: 0.75rem;
         }
 
-        .filter-list .for {
+        .filter-list .check {
             color: #22c55e;
-            font-weight: 600;
+            font-weight: 900;
+            font-size: 1.3rem;
         }
 
-        .filter-list .not-for {
+        .filter-list .cross {
             color: #ef4444;
-            font-weight: 600;
+            font-weight: 900;
+            font-size: 1.3rem;
         }
 
-        /* Final CTA */
-        .final {
-            text-align: center;
+        /* TESTIMONIAL */
+        .testimonial {
+            background: white;
+            border-radius: 24px;
+            padding: 2.5rem;
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            border: 1px solid #edf2f7;
+        }
+
+        .testimonial-text {
+            font-size: 1.25rem;
+            line-height: 1.7;
+            color: #2d3748;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            color: #667eea;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .testimonial-meta {
+            color: #718096;
+            font-size: 0.95rem;
+        }
+
+        /* FINAL CTA */
+        .final-cta {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
+            text-align: center;
             padding: 5rem 2rem;
         }
 
-        .final h2 {
+        .final-cta h2 {
             color: white;
+            margin-bottom: 1rem;
         }
 
-        .final .btn {
-            background: white;
-            color: #667eea;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        .final-cta p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            margin-bottom: 2.5rem;
         }
 
-        .final .btn:hover {
-            background: #f0f0f0;
-        }
-
-        /* Footer */
+        /* FOOTER */
         footer {
-            background: white;
+            background: #1a1a1a;
+            color: white;
             text-align: center;
             padding: 3rem 2rem;
-            border-top: 1px solid #e0e0e0;
         }
 
         footer a {
-            color: #667eea;
+            color: #a0aec0;
             text-decoration: none;
             margin: 0 1rem;
+            transition: color 0.2s;
         }
 
         footer a:hover {
-            text-decoration: underline;
+            color: #667eea;
         }
 
-        .copyright {
-            opacity: 0.6;
+        .built-by {
+            margin-top: 2rem;
             font-size: 0.9rem;
-            margin-bottom: 1rem;
+            opacity: 0.6;
         }
 
         hr {
             border: none;
-            border-top: 1px solid #e0e0e0;
-            margin: 2rem 0;
+            border-top: 1px solid #2d3748;
+            max-width: 200px;
+            margin: 2rem auto;
         }
 
         @media (max-width: 768px) {
             section { padding: 4rem 0; }
-            .hero { padding: 6rem 1rem 4rem; }
+            .hero { padding: 6rem 1.5rem 4rem; }
             .dashboard-link { right: 1rem; }
             .steps { grid-template-columns: 1fr; }
+            .memory-preview { padding: 2rem 1rem; }
         }
     </style>
 
     {% include "base_analytics.html" %}
 </head>
 <body>
+
+    <!-- Fixed dashboard link for logged‑in users -->
     {% if user %}
     <div class="dashboard-link">
         <a href="/dashboard" class="btn">Dashboard →</a>
     </div>
     {% endif %}
 
-    <!-- HERO -->
+    <!-- HERO SECTION -->
     <section class="hero">
         <div class="logo">STUDYCORE</div>
         <h1>Train Recall.<br>Control Exams.</h1>
         <p>
-            You don’t fail because you’re not smart. You fail because you never trained retrieval properly.
-            StudyCore forces you to prove what you actually know.
+            You don’t fail because you’re not smart. You fail because you never trained retrieval properly.<br>
+            <strong>StudyCore forces you to prove what you actually know.</strong>
         </p>
+
         {% if user %}
         <a href="/dashboard" class="btn btn-large">Continue Training →</a>
         {% else %}
-        <a href="/auth/login" class="btn btn-large btn-start">Start Proving →</a>
+        <a href="/auth/login" class="btn btn-large">Start Proving →</a>
         {% endif %}
-        <div class="subtext">
-            Free. No credit card. Built for serious Nigerian students.
+
+        <div class="trust-line">
+            ✓ 100% Free Forever  •  ✓ No Credit Card  •  ✓ Built by a Nigerian Student
         </div>
     </section>
 
-    <!-- TRUTH -->
+    <!-- TRUTH: The real problem -->
     <section class="truth">
         <div class="container">
             <h2>The Real Problem</h2>
@@ -388,73 +473,100 @@
             <p><strong>None of them train recall.</strong></p>
             <p>Exams test retrieval. Most students only practice recognition.</p>
             <p>That’s why you blank out.</p>
+            <div class="truth-highlight">
+                <p style="margin-bottom: 0; font-size: 1.3rem;">🧠 <strong>Recognition is an illusion. Retrieval is the truth.</strong></p>
+            </div>
         </div>
     </section>
 
-    <!-- PROCESS + MEMORY STATES -->
+    <!-- PROCESS: How it works + memory preview -->
     <section class="process">
         <div class="container">
             <h2>This Is Memory Training</h2>
+            <p class="process-sub">Three steps. No shortcuts. Real results.</p>
+
             <div class="steps">
                 <div class="step">
-                    <h3>1. Create Topic</h3>
-                    <p>Add what you're studying. Takes 10 seconds. Example: "Cardiovascular System".</p>
+                    <h3>1. Create a topic</h3>
+                    <p>Add what you're studying. Takes 10 seconds. Example: "Cardiovascular System" or "Contract Law".</p>
                 </div>
                 <div class="step">
-                    <h3>2. Explain Mode</h3>
-                    <p>Close your notes. 5‑minute timer. Explain the topic out loud. Struggle = learning.</p>
+                    <h3>2. Explain mode</h3>
+                    <p>Close your notes. 5‑minute timer. Explain the topic out loud like you're teaching. Struggle = learning.</p>
                 </div>
                 <div class="step">
-                    <h3>3. See Your Position</h3>
+                    <h3>3. See your position</h3>
                     <p>Rate your confidence. The app shows your real memory strength and schedules your next review.</p>
                 </div>
             </div>
 
-            <!-- Memory Strength Preview -->
-            <div class="memory-states">
-                <h3>Your Dashboard Shows The Truth</h3>
+            <!-- Dashboard preview with memory states and exam‑ready metric -->
+            <div class="memory-preview">
+                <h3>Your Memory Dashboard</h3>
                 <div class="states-grid">
-                    <span class="state-badge critical">🔴 CRITICAL</span>
-                    <span class="state-badge weak">🟠 WEAK</span>
-                    <span class="state-badge strengthening">🟡 STRENGTHENING</span>
-                    <span class="state-badge strong">🟢 STRONG</span>
-                    <span class="state-badge automatic">💎 AUTOMATIC</span>
+                    <span class="state-badge">🔴 CRITICAL</span>
+                    <span class="state-badge">🟠 WEAK</span>
+                    <span class="state-badge">🟡 STRENGTHENING</span>
+                    <span class="state-badge">🟢 STRONG</span>
+                    <span class="state-badge">💎 AUTOMATIC</span>
                 </div>
-                <p style="margin-top: 1.5rem; color: #666; text-align: center;">You either know it — or you don’t. No illusions.</p>
+                <div class="exam-ready-metric">
+                    <div class="exam-ready-number">68%</div>
+                    <div class="exam-ready-label">EXAM-READY TOPICS</div>
+                    <div class="risk-tag">⚠️ 5 topics at risk of being forgotten</div>
+                </div>
+                <p style="text-align: center; margin-top: 1.5rem; opacity: 0.9;">No illusions. Just data.</p>
             </div>
         </div>
     </section>
 
-    <!-- FILTER (Who this is for / not for) -->
+    <!-- FILTER: who this is for / not for -->
     <section class="filter">
         <div class="container">
             <div class="filter-grid">
-                <div>
-                    <h2>✓ This is for</h2>
+                <div class="filter-col">
+                    <h3>✓ This is for</h3>
                     <ul class="filter-list">
-                        <li><span class="for">→</span> Students who want measurable performance</li>
-                        <li><span class="for">→</span> Students who want pressure-proof recall</li>
-                        <li><span class="for">→</span> Students tired of fake productivity</li>
-                        <li><span class="for">→</span> Those who want to see their exam-ready %</li>
+                        <li><span class="check">✓</span> Students who want measurable performance</li>
+                        <li><span class="check">✓</span> Students who want pressure‑proof recall</li>
+                        <li><span class="check">✓</span> Students tired of fake productivity</li>
+                        <li><span class="check">✓</span> Those who want to see their exam‑ready %</li>
                     </ul>
                 </div>
-                <div>
-                    <h2>✗ This is NOT for</h2>
+                <div class="filter-col">
+                    <h3>✗ This is NOT for</h3>
                     <ul class="filter-list">
-                        <li><span class="not-for">→</span> Passive readers</li>
-                        <li><span class="not-for">→</span> Last-minute crammers</li>
-                        <li><span class="not-for">→</span> Shortcut seekers</li>
-                        <li><span class="not-for">→</span> People who don't want to be tested</li>
+                        <li><span class="cross">✗</span> Passive rereaders</li>
+                        <li><span class="cross">✗</span> Last‑minute crammers</li>
+                        <li><span class="cross">✗</span> Shortcut seekers</li>
+                        <li><span class="cross">✗</span> People who don't want to be tested</li>
                     </ul>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- FINAL CTA -->
-    <section class="final">
+    <!-- SOCIAL PROOF (testimonial) -->
+    <section style="background: white; padding: 4rem 0;">
         <div class="container">
-            <h2>If you’re serious, prove it.</h2>
+            <div class="testimonial">
+                <p class="testimonial-text">
+                    “I used to think I knew topics until I tried explaining them. StudyCore showed me I was lying to myself. Now I actually remember what I study.”
+                </p>
+                <div class="testimonial-author">— Nursing Student, University of Lagos</div>
+                <div class="testimonial-meta">2nd year • 87% exam‑ready</div>
+            </div>
+            <p style="text-align: center; color: #718096; margin-top: 2rem; font-size: 0.95rem;">
+                Trusted by students at UNILAG, UNIBEN, OAU, and beyond.
+            </p>
+        </div>
+    </section>
+
+    <!-- FINAL CALL TO ACTION -->
+    <section class="final-cta">
+        <div class="container">
+            <h2>If you're serious, prove it.</h2>
+            <p>Train your memory. See what you actually know. Free forever.</p>
             {% if user %}
             <a href="/dashboard" class="btn btn-large">Go to Dashboard →</a>
             {% else %}
@@ -465,14 +577,16 @@
 
     <!-- FOOTER -->
     <footer>
-        <div class="copyright">© 2026 StudyCore. Train Recall. Control Exams.</div>
-        <div>
+        <div>© 2026 StudyCore. Train Recall. Control Exams.</div>
+        <div style="margin: 1.5rem 0;">
             <a href="/privacy">Privacy</a>
             <a href="/terms">Terms</a>
             <a href="/feedback">Feedback</a>
         </div>
-        <div style="margin-top: 1.5rem; font-size: 0.8rem; opacity: 0.5;">
-            Built by a Nigerian student for Nigerian students.
+        <hr>
+        <div class="built-by">
+            Built by a Nigerian student for Nigerian students.<br>
+            <a href="https://linkedin.com/in/goodnews-okpubigho" target="_blank" style="color: #667eea; margin-top: 0.5rem; display: inline-block;">Goodnews Okpubigho</a>
         </div>
     </footer>
 </body>
