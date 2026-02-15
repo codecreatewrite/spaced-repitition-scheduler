@@ -2,27 +2,29 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">                          
-    <!-- Include mobile styles -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     {% include "_mobile_styles.html" %}
 
-    <!-- SEO & Verification -->
-    <title>StudyCore - Active Recall & Spaced Repetition for Nigerian Students</title>
-    <meta name="description" content="StudyCore helps Nigerian university students master their courses using active recall and spaced repetition. Get automatic review reminders and track your study progress. Free forever.">
-    <meta name="keywords" content="study app Nigeria, spaced repetition, active recall, university students, exam preparation, Nigerian education, study schedule, automatic review scheduling">
+    <!-- Primary Meta Tags -->
+    <title>StudyCore – Train Recall. Control Exams.</title>
+    <meta name="title" content="StudyCore – Train Recall. Control Exams.">
+    <meta name="description" content="Stop rereading. Start proving. StudyCore forces you to explain topics from memory and shows your real exam readiness. Built for serious Nigerian students.">
+    <meta name="keywords" content="study app Nigeria, spaced repetition, active recall, university students, exam preparation, Nigerian education, study schedule">
     <meta name="author" content="Goodnews Okpubigho">
 
-    <!-- Open Graph -->
-    <meta property="og:title" content="StudyCore - Study Smarter, Not Harder">
-    <meta property="og:description" content="Free active recall and spaced repetition tools for Nigerian university students. Built-in review scheduler to never forget what you learn.">
+    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://studycore.com.ng">
+    <meta property="og:title" content="StudyCore – Train Recall. Control Exams.">
+    <meta property="og:description" content="You don’t fail because you're not smart. You fail because you never trained retrieval properly. StudyCore forces you to prove what you actually know.">
     <meta property="og:site_name" content="StudyCore">
 
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="StudyCore - Study Smarter, Not Harder">
-    <meta name="twitter:description" content="Free study tools for Nigerian students using active recall and spaced repetition.">
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://studycore.com.ng">
+    <meta property="twitter:title" content="StudyCore – Train Recall. Control Exams.">
+    <meta property="twitter:description" content="Stop rereading. Start proving. StudyCore forces you to explain topics from memory and shows your real exam readiness.">
 
     <!-- Google Site Verification -->
     <meta name="google-site-verification" content="CYRvIriA_IV95si1v-q_oXoW-HHMN0bUe9Oj68exdhU">
@@ -32,203 +34,291 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: #f5f7fa;
             color: #1a1a1a;
-            overflow-x: hidden;
+            line-height: 1.6;
         }
 
-        /* Purpose Statement Box */
-        .purpose-box {
-            background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(10px);
-            padding: 1.5rem;
-            border-radius: 16px;
-            margin-top: 6rem;
-            max-width: 700px;
-            border: 2px solid rgba(255,255,255,0.2);
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 2rem;
         }
 
-        .purpose-box h2 {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 0.75rem;
+        section {
+            padding: 5rem 0;
+        }
+
+        h1, h2, h3 {
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+        }
+
+        h2 {
+            font-size: clamp(2rem, 4vw, 2.5rem);
+            margin-bottom: 2rem;
+            color: #1a1a1a;
+        }
+
+        /* Navigation / Dashboard button */
+        .dashboard-link {
+            position: fixed;
+            top: 1.5rem;
+            right: 2rem;
+            z-index: 100;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+            box-shadow: none;
+        }
+
+        .btn-outline:hover {
+            background: #667eea;
             color: white;
         }
 
-        .purpose-box p {
-            font-size: 1.05rem;
-            line-height: 1.7;
-            color: rgba(255,255,255,0.95);
+        .btn-large {
+            padding: 1.2rem 3rem;
+            font-size: 1.1rem;
+        }
+
+        .btn-start {
+            background: white;
+            color: #667eea;
+            padding: 1.2rem 3.2rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            box-shadow: 0 8px 20px -5px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.1);
+           transition: all 0.25s ease;
+        }
+        
+        .btn-start:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px -5px rgba(102, 126, 234, 0.5), 0 0 0 1px rgba(255,255,255,0.2);
         }
 
         /* Hero Section */
         .hero {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 4rem 2rem;
             text-align: center;
-            min-height: 100vh;
+            padding: 8rem 2rem 6rem;
+            min-height: 90vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: center;
         }
 
         .logo {
-            font-size: 3rem;
-            font-weight: 900;
-            margin-bottom: 0.5rem;
-            letter-spacing: -1px;
-        }
-
-        .tagline {
-            font-size: 1.2rem;
-            opacity: 0.95;
-            margin-bottom: 2rem;
-            font-weight: 500;
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            opacity: 0.8;
+            margin-bottom: 3rem;
+            text-transform: uppercase;
         }
 
         .hero h1 {
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            font-weight: 800;
-            margin-bottom: 1rem;
-            line-height: 1.2;
+            color: white;
         }
 
         .hero p {
-            font-size: clamp(1rem, 2.5vw, 1.3rem);
-            margin-bottom: 2rem;
-            opacity: 0.95;
-            max-width: 600px;
-        }
-
-        .cta-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: white;
-            color: #667eea;
-            padding: 1rem 2.5rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 1.1rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-        }
-
-        .trust-badge {
-            margin-top: 2rem;
+            font-size: 1.25rem;
             opacity: 0.9;
-            font-size: 0.9rem;
+            max-width: 650px;
+            margin: 0 auto 2.5rem;
         }
 
-        /* Features Section */
-        .features {
-            padding: 5rem 2rem;
+        .hero .subtext {
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        /* Truth Section */
+        .truth {
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .truth p {
+            font-size: 1.2rem;
+            margin-bottom: 1.2rem;
+            color: #333;
+        }
+
+        .truth p strong {
+            color: #667eea;
+        }
+
+        /* Process Section */
+        .process {
             background: #f9fafb;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
-            color: #1a1a1a;
-        }
-
-        .section-subtitle {
-            text-align: center;
-            font-size: 1.2rem;
-            color: #666;
-            margin-bottom: 3rem;
-        }
-
-        .feature-grid {
+        .steps {
+            margin: 3rem 0;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 2rem;
+            text-align: left;
         }
 
-        .feature-card {
+        .step {
             background: white;
             padding: 2rem;
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             transition: transform 0.2s;
         }
 
-        .feature-card:hover {
+        .step:hover {
             transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
         }
 
-        .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        .feature-card h3 {
-            font-size: 1.3rem;
-            margin-bottom: 0.5rem;
+        .step h3 {
             color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
         }
 
-        .feature-card p {
+        .step p {
             color: #666;
-            line-height: 1.6;
         }
 
-        /* Stats Section */
-        .stats {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 4rem 2rem;
+        /* Memory States Preview */
+        .memory-states {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            margin: 3rem 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid #e0e0e0;
+        }
+
+        .memory-states h3 {
+            margin-bottom: 1.5rem;
+            color: #667eea;
             text-align: center;
         }
 
-        .stats h2 {
-            font-size: 2rem;
-            margin-bottom: 2rem;
+        .states-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
         }
 
-        .stat-grid {
+        .state-badge {
+            background: #f0f0f0;
+            padding: 0.6rem 1.2rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .state-badge.critical { background: #fef2f2; color: #ef4444; }
+        .state-badge.weak { background: #fff7ed; color: #f97316; }
+        .state-badge.strengthening { background: #fefce8; color: #eab308; }
+        .state-badge.strong { background: #f0fdf4; color: #22c55e; }
+        .state-badge.automatic { background: #faf5ff; color: #8b5cf6; }
+
+        /* Filter Section */
+        .filter {
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .filter-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-            max-width: 800px;
-            margin: 0 auto;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-top: 2rem;
         }
 
-        .stat-item {
-            padding: 1rem;
+        .filter-list {
+            list-style: none;
         }
 
-        .stat-value {
-            font-size: 3rem;
-            font-weight: 900;
-            margin-bottom: 0.5rem;
+        .filter-list li {
+            margin-bottom: 0.8rem;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
         }
 
-        .stat-label {
-            opacity: 0.9;
-            font-size: 1.1rem;
+        .filter-list .for {
+            color: #22c55e;
+            font-weight: 600;
+        }
+
+        .filter-list .not-for {
+            color: #ef4444;
+            font-weight: 600;
+        }
+
+        /* Final CTA */
+        .final {
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5rem 2rem;
+        }
+
+        .final h2 {
+            color: white;
+        }
+
+        .final .btn {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .final .btn:hover {
+            background: #f0f0f0;
         }
 
         /* Footer */
         footer {
-            background: #1a1a1a;
-            color: white;
-            padding: 3rem 2rem;
+            background: white;
             text-align: center;
+            padding: 3rem 2rem;
+            border-top: 1px solid #e0e0e0;
         }
 
         footer a {
@@ -241,279 +331,148 @@
             text-decoration: underline;
         }
 
-        /* Responsive */
+        .copyright {
+            opacity: 0.6;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #e0e0e0;
+            margin: 2rem 0;
+        }
+
         @media (max-width: 768px) {
-            .hero { padding: 3rem 1rem; }
-            .section-title { font-size: 2rem; }
-            .logo { font-size: 2rem; }
-            .purpose-box { padding: 1rem; }
+            section { padding: 4rem 0; }
+            .hero { padding: 6rem 1rem 4rem; }
+            .dashboard-link { right: 1rem; }
+            .steps { grid-template-columns: 1fr; }
         }
     </style>
+
     {% include "base_analytics.html" %}
 </head>
 <body>
     {% if user %}
-    <div style="position: fixed; top: 1rem; right: 1rem; z-index: 1000;">
-        <a href="/dashboard" style="background: white; color: #667eea; padding: 0.75rem 1.5rem; border-radius: 50px; text-decoration: none; font-weight: 600; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
-            Go to Dashboard →
-        </a>
+    <div class="dashboard-link">
+        <a href="/dashboard" class="btn">Dashboard →</a>
     </div>
     {% endif %}
 
-    <!-- Hero Section -->
+    <!-- HERO -->
     <section class="hero">
-        <div class="logo">📚 StudyCore</div>
-        <div class="tagline">Study smarter, not harder. Built for Nigerian students.</div>
-
-        <h1>Master Your Courses with Active Recall</h1>
-        <p>Stop cramming. Start learning. Science-backed tools that force you to think, not just read.</p>
-
+        <div class="logo">STUDYCORE</div>
+        <h1>Train Recall.<br>Control Exams.</h1>
+        <p>
+            You don’t fail because you’re not smart. You fail because you never trained retrieval properly.
+            StudyCore forces you to prove what you actually know.
+        </p>
         {% if user %}
-        <a href="/dashboard" class="cta-button">
-            <span>Open Dashboard</span>
-        </a>
+        <a href="/dashboard" class="btn btn-large">Continue Training →</a>
         {% else %}
-        <a href="/auth/login" class="cta-button">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-            </svg>
-            <span>Start Free - Sign in with Google</span>
-        </a>
+        <a href="/auth/login" class="btn btn-large btn-start">Start Proving →</a>
         {% endif %}
-
-        <div class="trust-badge">
-            ✓ 100% Free Forever &nbsp;•&nbsp; ✓ Built by a Nigerian student &nbsp;•&nbsp; ✓ No BS, just results
-        </div>
-
-        <!-- CRITICAL: Clear Purpose Statement for Google Verification -->
-        <div class="purpose-box">
-            <h2>🎯 What is StudyCore?</h2>
-            <p>
-                StudyCore is a <strong>free learning platform</strong> designed specifically for Nigerian university students.
-                We help you remember what you study using two scientifically-proven methods:
-                <strong>active recall</strong> (explaining topics from memory) and <strong>spaced repetition</strong>
-                (automatic review scheduling). Our app schedules your review sessions automatically using proven spaced repetition intervals
-                at optimal intervals, ensuring you never forget what you've learned.
-            </p>
+        <div class="subtext">
+            Free. No credit card. Built for serious Nigerian students.
         </div>
     </section>
 
-    <!-- Features Section -->
-    <section class="features">
+    <!-- TRUTH -->
+    <section class="truth">
         <div class="container">
-            <h2 class="section-title">Why StudyCore Works</h2>
-            <p class="section-subtitle">Based on cognitive science, built for Nigerian universities</p>
-
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">🧠</div>
-                    <h3>Active Recall</h3>
-                    <p>Force yourself to explain topics from memory. The science shows this is 200% more effective than re-reading notes.</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">📅</div>
-                    <h3>Spaced Repetition</h3>
-                    <p>Automatically schedule reviews at optimal intervals (1, 3, 7, 21 days). Review at exactly the right time to lock in long-term memory.</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">⚡</div>
-                    <h3>Explain Mode</h3>
-                    <p>Set a timer. Explain the topic out loud like you're teaching. Identify what you don't know. This is how real learning happens.</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">📊</div>
-                    <h3>Track Progress</h3>
-                    <p>See your study streaks, completion rates, and weak spots. Know exactly where to focus your energy.</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">🎯</div>
-                    <h3>No Distractions</h3>
-                    <p>No flashy gamification. No social media features. Just you and the material. Pure focus on learning.</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">🇳🇬</div>
-                    <h3>Built for Naija</h3>
-                    <p>Made by a Nigerian student who understands the stress, the syllabus, and the exam pressure. This is for us.</p>
-                </div>
-            </div>
+            <h2>The Real Problem</h2>
+            <p>Reading feels productive.</p>
+            <p>Highlighting feels smart.</p>
+            <p>Cramming feels intense.</p>
+            <p><strong>None of them train recall.</strong></p>
+            <p>Exams test retrieval. Most students only practice recognition.</p>
+            <p>That’s why you blank out.</p>
         </div>
     </section>
 
-    <!-- Study Flow Integration Section -->
-    <section class="features" style="background: white; padding: 5rem 2rem;">
+    <!-- PROCESS + MEMORY STATES -->
+    <section class="process">
         <div class="container">
-            <h2 class="section-title">How StudyCore Fits Your Study Routine</h2>
-            <p class="section-subtitle">The 5-step system top students use (now automated)</p>
-
-            <div style="max-width: 900px; margin: 0 auto;">
-                <!-- Step-by-Step Flow -->
-                <div style="display: grid; gap: 2rem;">
-                    <!-- Step 1 -->
-                    <div style="display: flex; gap: 1.5rem; align-items: start;">
-                        <div style="min-width: 50px; height: 50px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold;">1</div>
-                        <div>
-                            <h3 style="color: #667eea; margin-bottom: 0.5rem;">📖 Skim & Highlight (Your Part)</h3>
-                            <p style="color: #666; line-height: 1.6;">Read your notes, textbook, or lecture slides. Identify the big ideas and key concepts.</p>
-                        </div>
-                    </div>
-
-                    <!-- Step 2 -->
-                    <div style="display: flex; gap: 1.5rem; align-items: start;">
-                        <div style="min-width: 50px; height: 50px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold;">2</div>
-                        <div>
-                            <h3 style="color: #667eea; margin-bottom: 0.5rem;">🎯 Open StudyCore → Create Topic</h3>
-                            <p style="color: #666; line-height: 1.6;">Add the topic to your dashboard. Takes 10 seconds.</p>
-                        </div>
-                    </div>
-
-                    <!-- Step 3 -->
-                    <div style="display: flex; gap: 1.5rem; align-items: start;">
-                        <div style="min-width: 50px; height: 50px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold;">3</div>
-                        <div>
-                            <h3 style="color: #667eea; margin-bottom: 0.5rem;">⏱️ Click "Explain Mode" → Start Timer (5 mins)</h3>
-                            <p style="color: #666; line-height: 1.6;">Close your notes. Explain the topic OUT LOUD like you're teaching someone. This is where learning happens.</p>
-                        </div>
-                    </div>
-
-                    <!-- Step 4 -->
-                    <div style="display: flex; gap: 1.5rem; align-items: start;">
-                        <div style="min-width: 50px; height: 50px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold;">4</div>
-                        <div>
-                            <h3 style="color: #667eea; margin-bottom: 0.5rem;">💭 Rate Your Confidence (1-5)</h3>
-                            <p style="color: #666; line-height: 1.6;">Struggled? Confident? The app learns from your rating and automatically schedules when you should review.</p>
-                        </div>
-                    </div>
-
-                    <!-- Step 5 -->
-                    <div style="display: flex; gap: 1.5rem; align-items: start;">
-                        <div style="min-width: 50px; height: 50px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold;">5</div>
-                        <div>
-                            <h3 style="color: #667eea; margin-bottom: 0.5rem;">🔔 Get Reminded → Review → Repeat</h3>
-                            <p style="color: #666; line-height: 1.6;">StudyCore reminds you BEFORE you forget. Open the app, see "Due Today", explain again. You're building long-term memory.</p>
-                        </div>
-                    </div>
+            <h2>This Is Memory Training</h2>
+            <div class="steps">
+                <div class="step">
+                    <h3>1. Create Topic</h3>
+                    <p>Add what you're studying. Takes 10 seconds. Example: "Cardiovascular System".</p>
                 </div>
-
-                <!-- Call-out Box -->
-                <div style="background: #f0f4ff; padding: 2rem; border-radius: 16px; margin-top: 3rem; border-left: 4px solid #667eea;">
-                    <p style="color: #1a1a1a; font-size: 1.1rem; line-height: 1.7; margin: 0;">
-                        <strong>💡 The Secret:</strong> Most students study by reading → highlighting → re-reading. 
-                        This creates an <em>illusion of knowledge</em>. StudyCore forces you to <strong>retrieve from memory</strong>, 
-                        which is proven to be 200% more effective. You either know it, or you don't. No more lying to yourself.
-                    </p>
+                <div class="step">
+                    <h3>2. Explain Mode</h3>
+                    <p>Close your notes. 5‑minute timer. Explain the topic out loud. Struggle = learning.</p>
                 </div>
+                <div class="step">
+                    <h3>3. See Your Position</h3>
+                    <p>Rate your confidence. The app shows your real memory strength and schedules your next review.</p>
+                </div>
+            </div>
+
+            <!-- Memory Strength Preview -->
+            <div class="memory-states">
+                <h3>Your Dashboard Shows The Truth</h3>
+                <div class="states-grid">
+                    <span class="state-badge critical">🔴 CRITICAL</span>
+                    <span class="state-badge weak">🟠 WEAK</span>
+                    <span class="state-badge strengthening">🟡 STRENGTHENING</span>
+                    <span class="state-badge strong">🟢 STRONG</span>
+                    <span class="state-badge automatic">💎 AUTOMATIC</span>
+                </div>
+                <p style="margin-top: 1.5rem; color: #666; text-align: center;">You either know it — or you don’t. No illusions.</p>
             </div>
         </div>
     </section>
 
-    <!-- Stats Section -->
-    <section class="stats">
+    <!-- FILTER (Who this is for / not for) -->
+    <section class="filter">
         <div class="container">
-            <h2>Join Students Getting Results</h2>
-
-            <div class="stat-grid">
-                <div class="stat-item">
-                    <div class="stat-value">200%</div>
-                    <div class="stat-label">Better Retention</div>
+            <div class="filter-grid">
+                <div>
+                    <h2>✓ This is for</h2>
+                    <ul class="filter-list">
+                        <li><span class="for">→</span> Students who want measurable performance</li>
+                        <li><span class="for">→</span> Students who want pressure-proof recall</li>
+                        <li><span class="for">→</span> Students tired of fake productivity</li>
+                        <li><span class="for">→</span> Those who want to see their exam-ready %</li>
+                    </ul>
                 </div>
-
-                <div class="stat-item">
-                    <div class="stat-value">15min</div>
-                    <div class="stat-label">Daily Practice</div>
-                </div>
-
-                <div class="stat-item">
-                    <div class="stat-value">100%</div>
-                    <div class="stat-label">Free Forever</div>
+                <div>
+                    <h2>✗ This is NOT for</h2>
+                    <ul class="filter-list">
+                        <li><span class="not-for">→</span> Passive readers</li>
+                        <li><span class="not-for">→</span> Last-minute crammers</li>
+                        <li><span class="not-for">→</span> Shortcut seekers</li>
+                        <li><span class="not-for">→</span> People who don't want to be tested</li>
+                    </ul>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Coming Soon Features Section (Same gradient flow) -->
-    <section class="features" style="background: #f9fafb; padding: 5rem 2rem;">
+    <!-- FINAL CTA -->
+    <section class="final">
         <div class="container">
-            <h2 class="section-title">🚀 What's Coming Next</h2>
-            <p class="section-subtitle" style="margin-bottom: 1rem;">StudyCore already works end-to-end today. These are optional upgrades we're building based on student feedback.</p>
-
-            <div class="feature-grid" style="margin-top: 3rem;">
-                <div class="feature-card">
-                    <div class="feature-icon">📚</div>
-                    <h3>Past Questions Bank</h3>
-                    <p>Upload and schedule reviews of past questions by course and year. Community-shared question bank.</p>
-                    <div style="margin-top: 1rem; padding: 0.5rem 1rem; background: rgba(102, 126, 234, 0.1); border-radius: 50px; display: inline-block; font-size: 0.85rem; color: #667eea; font-weight: 600;">
-                        📅 Planned
-                    </div>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">👥</div>
-                    <h3>Study Groups</h3>
-                    <p>Form groups, share resources, hold each other accountable. Study together, succeed together.</p>
-                    <div style="margin-top: 1rem; padding: 0.5rem 1rem; background: rgba(102, 126, 234, 0.1); border-radius: 50px; display: inline-block; font-size: 0.85rem; color: #667eea; font-weight: 600;">
-                        📅 In Development
-                    </div>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">🗺️</div>
-                    <h3>Visual Map Gallery</h3>
-                    <p>Upload your hand-drawn concept maps and visual notes. Schedule reviews of your maps alongside topics.</p>
-                    <div style="margin-top: 1rem; padding: 0.5rem 1rem; background: rgba(102, 126, 234, 0.1); border-radius: 50px; display: inline-block; font-size: 0.85rem; color: #667eea; font-weight: 600;">
-                        📅 Planned
-                    </div>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">🔥</div>
-                    <h3>Exam Rush Mode</h3>
-                    <p>30-day countdown timer, cram session scheduler, group matchmaking. Survive exam season together.</p>
-                    <div style="margin-top: 1rem; padding: 0.5rem 1rem; background: rgba(102, 126, 234, 0.1); border-radius: 50px; display: inline-block; font-size: 0.85rem; color: #667eea; font-weight: 600;">
-                        📅 Next Phase
-                    </div>
-                </div>
-            </div>
-
-            <!-- Single CTA at bottom -->
-            <div style="text-align: center; margin-top: 4rem; padding-top: 3rem; border-top: 2px solid #e0e0e0;">
-                <h2 style="font-size: 2.5rem; margin-bottom: 1rem; color: #1a1a1a;">Ready to Stop Cramming?</h2>
-                <p style="font-size: 1.2rem; color: #666; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
-                    Start learning the way your brain actually works. Free forever.
-                </p>
-
-                {% if user %}
-                <a href="/dashboard" class="cta-button" style="margin-right: 1rem;">Go to Dashboard →</a>
-                {% else %}
-                <a href="/auth/login" class="cta-button" style="margin-right: 1rem;">Start Free - No Credit Card</a>
-                {% endif %}
-                
-                <a href="/feedback" style="display: inline-block; color: #667eea; padding: 1rem 2rem; border-radius: 50px; text-decoration: none; font-weight: 600; border: 2px solid #667eea;">
-                    💡 Submit Feedback
-                </a>
-            </div>
+            <h2>If you’re serious, prove it.</h2>
+            {% if user %}
+            <a href="/dashboard" class="btn btn-large">Go to Dashboard →</a>
+            {% else %}
+            <a href="/auth/login" class="btn btn-large">Start Training Now →</a>
+            {% endif %}
         </div>
     </section>
 
-    <!-- Footer -->
+    <!-- FOOTER -->
     <footer>
-        <div class="container">
-            <p>&copy; 2026 StudyCore. Built with ❤️ for Nigerian students.</p>
-            <div style="margin-top: 1rem;">
-                <a href="/privacy">Privacy Policy</a>
-                <a href="/terms">Terms of Service</a>
-                <a href="/feedback">Feedback</a>
-            </div>
-            <div style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.7;">
-                <p>Created by <a href="https://linkedin.com/in/goodnews-okpubigho" target="_blank">Efetobo Okpubigho</a></p>
-            </div>
+        <div class="copyright">© 2026 StudyCore. Train Recall. Control Exams.</div>
+        <div>
+            <a href="/privacy">Privacy</a>
+            <a href="/terms">Terms</a>
+            <a href="/feedback">Feedback</a>
+        </div>
+        <div style="margin-top: 1.5rem; font-size: 0.8rem; opacity: 0.5;">
+            Built by a Nigerian student for Nigerian students.
         </div>
     </footer>
 </body>
